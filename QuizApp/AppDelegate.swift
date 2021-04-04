@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  QuizApp
 //
-//  Created by Five on 01.04.2021..
+//  Created by Marin on 01.04.2021..
 //
 
 import UIKit

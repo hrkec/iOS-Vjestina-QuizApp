@@ -9,10 +9,9 @@
 /* Begin PBXBuildFile section */
 		523A058B26165D2F00E2B23D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523A058A26165D2F00E2B23D /* AppDelegate.swift */; };
 		523A058D26165D2F00E2B23D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523A058C26165D2F00E2B23D /* SceneDelegate.swift */; };
-		523A058F26165D2F00E2B23D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523A058E26165D2F00E2B23D /* ViewController.swift */; };
-		523A059226165D2F00E2B23D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 523A059026165D2F00E2B23D /* Main.storyboard */; };
 		523A059426165D3000E2B23D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 523A059326165D3000E2B23D /* Assets.xcassets */; };
 		523A059726165D3000E2B23D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 523A059526165D3000E2B23D /* LaunchScreen.storyboard */; };
+		52922039261A11A20009292E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52922038261A11A20009292E /* LoginViewController.swift */; };
 		C0FD98EA1BC73A1C546BFE3B /* Pods_QuizApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B38510FEB54DF6EF92C066 /* Pods_QuizApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,11 +20,10 @@
 		523A058726165D2F00E2B23D /* QuizApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		523A058A26165D2F00E2B23D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		523A058C26165D2F00E2B23D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		523A058E26165D2F00E2B23D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		523A059126165D2F00E2B23D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		523A059326165D3000E2B23D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		523A059626165D3000E2B23D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		523A059826165D3000E2B23D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52922038261A11A20009292E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		7B9D49C4D0E876BE6B2DA794 /* Pods-QuizApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QuizApp.release.xcconfig"; path = "Target Support Files/Pods-QuizApp/Pods-QuizApp.release.xcconfig"; sourceTree = "<group>"; };
 		EC0359CE8DB3B90FE96668D9 /* Pods-QuizApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QuizApp.debug.xcconfig"; path = "Target Support Files/Pods-QuizApp/Pods-QuizApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,7 +46,6 @@
 				EC0359CE8DB3B90FE96668D9 /* Pods-QuizApp.debug.xcconfig */,
 				7B9D49C4D0E876BE6B2DA794 /* Pods-QuizApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -75,11 +72,10 @@
 			children = (
 				523A058A26165D2F00E2B23D /* AppDelegate.swift */,
 				523A058C26165D2F00E2B23D /* SceneDelegate.swift */,
-				523A058E26165D2F00E2B23D /* ViewController.swift */,
-				523A059026165D2F00E2B23D /* Main.storyboard */,
 				523A059326165D3000E2B23D /* Assets.xcassets */,
 				523A059526165D3000E2B23D /* LaunchScreen.storyboard */,
 				523A059826165D3000E2B23D /* Info.plist */,
+				52922038261A11A20009292E /* LoginViewController.swift */,
 			);
 			path = QuizApp;
 			sourceTree = "<group>";
@@ -103,6 +99,7 @@
 				523A058326165D2F00E2B23D /* Sources */,
 				523A058426165D2F00E2B23D /* Frameworks */,
 				523A058526165D2F00E2B23D /* Resources */,
+				688229B9AE120A20A165131C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -152,13 +149,29 @@
 			files = (
 				523A059726165D3000E2B23D /* LaunchScreen.storyboard in Resources */,
 				523A059426165D3000E2B23D /* Assets.xcassets in Resources */,
-				523A059226165D2F00E2B23D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		688229B9AE120A20A165131C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QuizApp/Pods-QuizApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QuizApp/Pods-QuizApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-QuizApp/Pods-QuizApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		B0B1167C2F2D758220255C43 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -188,7 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				523A058F26165D2F00E2B23D /* ViewController.swift in Sources */,
+				52922039261A11A20009292E /* LoginViewController.swift in Sources */,
 				523A058B26165D2F00E2B23D /* AppDelegate.swift in Sources */,
 				523A058D26165D2F00E2B23D /* SceneDelegate.swift in Sources */,
 			);
@@ -197,14 +210,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		523A059026165D2F00E2B23D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				523A059126165D2F00E2B23D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		523A059526165D3000E2B23D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
