@@ -70,8 +70,13 @@ class LoginViewController: UIViewController {
         loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
         loginButton.layer.cornerRadius = cornerRadius
         loginButton.layer.borderWidth = 1.0
-        // TODO: add login action
-            
+        // Adding login action after button is touched
+        loginButton.addAction(.init {
+            _ in
+            let status: LoginStatus = DataService().login(email: self.emailField.text!, password: self.passwordField.text!)
+            print(status)
+        }, for: .touchUpInside)
+        
         view.addSubview(gradientView)
         view.addSubview(titleLabel)
         view.addSubview(emailField)
@@ -81,6 +86,7 @@ class LoginViewController: UIViewController {
     }
     
     private func addConstraints() {
+        // TODO: FIX CONSTRAINTS
         gradientView.autoPinEdgesToSuperviewEdges()
         
         titleLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 60)
