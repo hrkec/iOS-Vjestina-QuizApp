@@ -10,12 +10,14 @@ import UIKit
 import PureLayout
 
 class LoginViewController: UIViewController {
-    private var titleLabel: UILabel!
-    private var gradientView: UIView!
+//    private var titleLabel: UILabel!
+    private var titleLabel: TitleLabel!
+    private var gradientView: GradientView!
     private var emailField: UITextField!
     private var passwordField: UITextField!
     private var loginButton: UIButton!
     private var toggleButton: UIButton!
+    private var errorLabel: UILabel!
     
     private var buttonWidth: CGFloat = 250
     private var buttonHeight: CGFloat = 40
@@ -33,10 +35,7 @@ class LoginViewController: UIViewController {
         gradientView = GradientView(gradientStartColor: UIColor.white, gradientEndColor: UIColor.gray)
         
         // Building a label with the app title
-        titleLabel = UILabel()
-        titleLabel.text = "QuizApp"
-        titleLabel.textAlignment = .center
-        titleLabel.textColor = .red
+        titleLabel = TitleLabel()
         
         // Building a textfield for email input
         emailField = UITextField()
@@ -70,11 +69,20 @@ class LoginViewController: UIViewController {
         loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
         loginButton.layer.cornerRadius = cornerRadius
         loginButton.layer.borderWidth = 1.0
-        // Adding login action after button is touched
+        // Adding login action after button is touched and showing error label if there is an error
+        errorLabel = UILabel(); errorLabel.isHidden = true; errorLabel.textAlignment = .center
+        errorLabel.text = "Wrong email or password"
         loginButton.addAction(.init {
             _ in
+            self.errorLabel.isHidden = true
             let status: LoginStatus = DataService().login(email: self.emailField.text!, password: self.passwordField.text!)
             print(status)
+            switch(status){
+                case .success:
+                    break
+                case .error( _, _):
+                    self.errorLabel.isHidden = false
+            }
         }, for: .touchUpInside)
         
         view.addSubview(gradientView)
@@ -83,14 +91,14 @@ class LoginViewController: UIViewController {
         view.addSubview(passwordField)
         view.addSubview(loginButton)
         view.addSubview(toggleButton)
+        view.addSubview(errorLabel)
     }
     
     private func addConstraints() {
         // TODO: FIX CONSTRAINTS
-        gradientView.autoPinEdgesToSuperviewEdges()
+        gradientView.addConstraints()
         
-        titleLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 60)
-        titleLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+        titleLabel.addConstraints()
         
 //        passwordField.autoCenterInSuperview()
 //        passwordField.autoPinEdge(toSuperviewEdge: .top, withInset: view.bounds.height / 3)
@@ -115,38 +123,9 @@ class LoginViewController: UIViewController {
         loginButton.autoAlignAxis(toSuperviewAxis: .vertical)
         loginButton.autoSetDimension(.width, toSize: buttonWidth)
         loginButton.autoSetDimension(.height, toSize: buttonHeight)
+        
+        errorLabel.autoPinEdge(.top, to: .bottom, of: loginButton, withOffset: offset)
+        errorLabel.autoAlignAxis(toSuperviewAxis: .vertical)
     }
 }
 
-class GradientView: UIView {
-    private let gradient: CAGradientLayer = CAGradientLayer()
-    private let gradientStartColor: UIColor
-    private let gradientEndColor: UIColor
-    
-    init(gradientStartColor: UIColor, gradientEndColor: UIColor){
-        self.gradientStartColor = gradientStartColor
-        self.gradientEndColor = gradientEndColor
-        super.init(frame: .zero)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSublayers(of layer: CALayer) {
-            super.layoutSublayers(of: layer)
-            gradient.frame = self.bounds
-        }
-
-        override public func draw(_ rect: CGRect) {
-            gradient.frame = self.bounds
-            gradient.colors = [gradientEndColor.cgColor, gradientStartColor.cgColor]
-//            gradient.startPoint = CGPoint(x: 1, y: 0)
-//            gradient.endPoint = CGPoint(x: 0.2, y: 1)
-            gradient.startPoint = .zero
-            gradient.endPoint = CGPoint(x: 1, y: 1)
-            if gradient.superlayer == nil {
-                layer.insertSublayer(gradient, at: 0)
-            }
-        }
-}
