@@ -22,6 +22,7 @@ class TitleLabel: UILabel {
         text = "QuizApp"
         textAlignment = .center
         textColor = .red
+        adjustsFontSizeToFitWidth = true
     }
     
     func addConstraints() {

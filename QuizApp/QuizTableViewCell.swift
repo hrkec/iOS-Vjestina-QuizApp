@@ -1,0 +1,68 @@
+//
+//  QuizTableViewCell.swift
+//  QuizApp
+//
+//  Created by Marin on 07.04.2021..
+//
+
+import Foundation
+import UIKit
+
+class QuizTableViewCell: UITableViewCell {
+    
+    var quizImageView: UIImageView! = UIImageView(image: UIImage(named: "quiz"))
+    var quizTitleLabel = UILabel()
+    var quizDescriptionLabel = UILabel()
+    var quizLevelLabel = UILabel()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        addSubview(quizImageView)
+        addSubview(quizTitleLabel)
+        addSubview(quizDescriptionLabel)
+        addSubview(quizLevelLabel)
+        
+        configureViews()
+        addConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func set(quiz: Quiz) {
+        quizTitleLabel.text = quiz.title
+        quizLevelLabel.text = "Level \(String(quiz.level))/3"
+        quizDescriptionLabel.text = quiz.description
+    }
+    
+    private func configureViews() {
+        quizImageView.layer.cornerRadius = 10
+        quizImageView.clipsToBounds = true
+        
+        quizTitleLabel.adjustsFontSizeToFitWidth = true
+        quizTitleLabel.numberOfLines = 0
+        
+        quizDescriptionLabel.lineBreakMode = .byWordWrapping
+        quizDescriptionLabel.numberOfLines = 0
+    }
+    
+    private func addConstraints() {
+        quizImageView.translatesAutoresizingMaskIntoConstraints = false
+        quizImageView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        quizImageView.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
+        quizImageView.autoSetDimension(.height, toSize: 80)
+        quizImageView.autoSetDimension(.width, toSize: 80)
+
+        quizTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        quizTitleLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
+
+        quizDescriptionLabel.autoPinEdge(.top, to: .bottom, of: quizTitleLabel)
+        quizDescriptionLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
+        quizDescriptionLabel.autoPinEdge(.trailing, to: .trailing, of: contentView, withOffset: 5)
+        
+        quizLevelLabel.autoPinEdge(.top, to: .bottom, of: quizDescriptionLabel)
+        quizLevelLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
+    }
+}
