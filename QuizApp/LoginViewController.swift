@@ -38,21 +38,18 @@ class LoginViewController: UIViewController {
         titleLabel = TitleLabel()
         
         // Building a textfield for email input
-        emailField = UITextField()
+        emailField = UITextFieldWithPadding()
         emailField.placeholder = "Email"
         emailField.layer.cornerRadius = cornerRadius
         emailField.layer.borderWidth = 1.0
-//        emailField.layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
-        emailField.layer.sublayerTransform = CATransform3DMakeScale(0.9, 1, 1)
         
         // Building a textfield for password input
-        passwordField = UITextField()
+        passwordField = UITextFieldWithPadding()
         passwordField.placeholder = "Password"
         passwordField.isSecureTextEntry = true
         passwordField.layer.cornerRadius = cornerRadius
+//        passwordField.layer.borderColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
         passwordField.layer.borderWidth = 1.0
-//        passwordField.layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
-//        passwordField.layer.sublayerTransform = CATransform3DMakeScale(0.9, 1, 1)
         
         // Building a toggle button for password visibility in password textfield
         toggleButton = UIButton()
@@ -66,7 +63,7 @@ class LoginViewController: UIViewController {
         loginButton = UIButton()
         loginButton.setTitle("Login", for: .normal)
         loginButton.setTitleColor(.black, for: .normal)
-        loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
+        loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         loginButton.layer.cornerRadius = cornerRadius
         loginButton.layer.borderWidth = 1.0
         // Adding login action after button is touched and showing error label if there is an error
@@ -95,7 +92,6 @@ class LoginViewController: UIViewController {
     }
     
     private func addConstraints() {
-        // TODO: FIX CONSTRAINTS
         gradientView.addConstraints()
         
         titleLabel.addConstraints()
@@ -129,3 +125,21 @@ class LoginViewController: UIViewController {
     }
 }
 
+class UITextFieldWithPadding: UITextField {
+    var textPadding = UIEdgeInsets(
+        top: 10,
+        left: 20,
+        bottom: 10,
+        right: 20
+    )
+    
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+            let rect = super.textRect(forBounds: bounds)
+            return rect.inset(by: textPadding)
+        }
+
+        override func editingRect(forBounds bounds: CGRect) -> CGRect {
+            let rect = super.editingRect(forBounds: bounds)
+            return rect.inset(by: textPadding)
+        }
+}
