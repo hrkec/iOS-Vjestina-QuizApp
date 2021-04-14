@@ -41,21 +41,17 @@ class LoginViewController: UIViewController {
         
         // Building a textfield for email input
         emailField = UITextFieldWithPadding()
-//        emailField.placeholder = "Email"
         emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         emailField.layer.cornerRadius = cornerRadius
-//        emailField.layer.borderWidth = 1.0
         emailField.textColor = .white
         emailField.backgroundColor = textFieldBackgroundColor
         emailField.font = myFont
         
         // Building a textfield for password input
         passwordField = UITextFieldWithPadding()
-//        passwordField.placeholder = "Password"
         passwordField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         passwordField.isSecureTextEntry = true
         passwordField.layer.cornerRadius = cornerRadius
-//        passwordField.layer.borderWidth = 1.0
         passwordField.textColor = .white
         passwordField.backgroundColor = textFieldBackgroundColor
         passwordField.font = myFont
@@ -75,7 +71,6 @@ class LoginViewController: UIViewController {
         loginButton.titleLabel?.font = myFont
         loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         loginButton.layer.cornerRadius = cornerRadius
-//        loginButton.layer.borderWidth = 1.0
         
         // Adding login action after button is touched and showing error label if there is an error
         errorLabel = UILabel(); errorLabel.isHidden = true; errorLabel.textAlignment = .center

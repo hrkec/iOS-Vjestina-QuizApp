@@ -28,8 +28,6 @@ class QuizzesViewController: UIViewController {
     private var numberOfQuizzesPerCategory: [QuizCategory: Int] = [:]
     private var idToCategory: [Int: QuizCategory] = [:]
     
-    private var quizCount: Int = 0
-    
     private let cellIdentifier = "quizTableCell"
     
     override func viewDidLoad() {
@@ -50,8 +48,6 @@ class QuizzesViewController: UIViewController {
         funFactLabel.text = "💡 Fun Fact"
         funFactLabel.textColor = .white
         funFactLabel.font = UIFont(name: "ArialRoundedMTBold", size: 20.0)
-//        funFactLabel.numberOfLines = 0
-//        funFactLabel.lineBreakMode = .byWordWrapping
         
         funFactText = UILabel()
         funFactText.isHidden = true
@@ -76,11 +72,8 @@ class QuizzesViewController: UIViewController {
             self.funFactLabel.isHidden = false
             self.funFactText.isHidden = false
             self.quizTableView.isHidden = false
-//            self.quizTableView.backgroundColor = .none
             self.quizTableView.reloadData()
-//            self.quizTableView = UITableView()
             self.nbas = 0
-            self.quizCount = 0
             self.numberOfQuizzesPerCategory = [:]
             
             var categories: Set<QuizCategory> = []
@@ -118,9 +111,6 @@ class QuizzesViewController: UIViewController {
             self.quizTableView.dataSource = self
             
             self.quizTableView.autoPinEdge(.top, to: .bottom, of: self.funFactText, withOffset: 20)
-//            self.quizTableView.autoPinEdge(toSuperviewEdge: .bottom)
-//            self.quizTableView.autoPinEdge(toSuperviewEdge: .trailing)
-//            self.quizTableView.autoPinEdge(toSuperviewEdge: .leading)
             self.quizTableView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20)
             self.quizTableView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10)
             self.quizTableView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10)
@@ -179,33 +169,11 @@ extension QuizzesViewController: UITableViewDataSource {
         // pretpostavimo da su kvizovi vec sortirani po kategorijama!!! Sortirati ih? provjeravati???
         cell.set(quiz: quizzes[sum + indexPath.row], font:self.myFont!)
         
-        
-//        cell.set(quiz: quizzes[self.quizCount])
-//        self.quizCount += 1
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         self.idToCategory[section]!.rawValue
     }
-    
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let returnedView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 25))
-//        returnedView.backgroundColor = .clear
-//
-//        let label = UILabel(frame: CGRect(x: 10, y: 7, width: view.frame.size.width, height: 25))
-//        label.text = self.idToCategory[section]!.rawValue
-//        label.textColor = .black
-//        returnedView.addSubview(label)
-//
-//        return returnedView
-//    }
-    
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        view.tintColor = UIColor.lightGray
-        let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.textColor = UIColor.darkGray
-        header.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-    }
+
 }
