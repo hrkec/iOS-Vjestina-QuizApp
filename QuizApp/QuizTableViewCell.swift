@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+// Custom cell class for TableView
+// It contains image, title, description and level of quiz
 class QuizTableViewCell: UITableViewCell {
     
     var quizImageView: UIImageView! = UIImageView(image: UIImage(named: "quiz"))

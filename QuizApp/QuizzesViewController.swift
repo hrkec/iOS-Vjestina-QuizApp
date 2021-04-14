@@ -49,6 +49,7 @@ class QuizzesViewController: UIViewController {
         funFactLabel.textColor = .white
         funFactLabel.font = UIFont(name: "ArialRoundedMTBold", size: 20.0)
         
+        // Building a "fun fact" label
         funFactText = UILabel()
         funFactText.isHidden = true
         funFactText.numberOfLines = 0
@@ -56,6 +57,7 @@ class QuizzesViewController: UIViewController {
         funFactText.textColor = .white
         funFactText.font = myFont
         
+        // Building a button for fetching quizzes
         getQuizButton = UIButton()
         getQuizButton.setTitle("Get Quiz", for: .normal)
         getQuizButton.setTitleColor(.black, for: .normal)
@@ -63,9 +65,17 @@ class QuizzesViewController: UIViewController {
         getQuizButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
         getQuizButton.layer.cornerRadius = cornerRadius
         
+        // Building a table view for fetched quizzes
         quizTableView = UITableView()
         quizTableView.isHidden = true
+        quizTableView.layer.cornerRadius = 15
+        quizTableView.backgroundColor = UIColor(white: 1, alpha: 0.3)
+        quizTableView.register(QuizTableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
+        quizTableView.dataSource = self
+        quizTableView.delegate = self
+        quizTableView.rowHeight = 120
         
+        // Action when Get Quiz button is clicked
         getQuizButton.addAction(.init {
             _ in
             self.quizzes = DataService().fetchQuizes()
@@ -86,6 +96,7 @@ class QuizzesViewController: UIViewController {
                     }
                 }
                 
+                // Add categories to set of categories and enumerate them
                 if !categories.contains(quiz.category) {
                     self.idToCategory[categoryId] = quiz.category
                     categoryId += 1
@@ -98,26 +109,17 @@ class QuizzesViewController: UIViewController {
                     self.numberOfQuizzesPerCategory[quiz.category] = 1
                 }
             }
-            self.quizTableView.layer.cornerRadius = 15
-//            self.quizTableView.backgroundColor = .clear
-            self.quizTableView.backgroundColor = UIColor(white: 1, alpha: 0.3)
-            
+
             self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
             
             self.numOfCategories = self.numberOfQuizzesPerCategory.keys.count
             self.view.addSubview(self.quizTableView)
-            
-            self.quizTableView.register(QuizTableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
-            self.quizTableView.dataSource = self
-            
             self.quizTableView.autoPinEdge(.top, to: .bottom, of: self.funFactText, withOffset: 20)
             self.quizTableView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20)
             self.quizTableView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10)
             self.quizTableView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10)
-            self.quizTableView.rowHeight = 120
+            
         }, for: .touchUpInside)
-        
-        quizTableView.delegate = self
         
         view.addSubview(gradientView)
         view.addSubview(titleLabel)
@@ -160,6 +162,8 @@ extension QuizzesViewController: UITableViewDataSource {
         
         cell.backgroundColor = .clear
         
+        // Assuming quizzes are already sorted by categories
+        // Determining index of quiz to show in a table cell by indexPath
         var sum: Int = 0
         if(indexPath.section != 0) {
             for i in 0...indexPath.section {
@@ -168,7 +172,6 @@ extension QuizzesViewController: UITableViewDataSource {
             sum -= 1
         }
         
-        // pretpostavimo da su kvizovi vec sortirani po kategorijama!!! Sortirati ih? provjeravati???
         cell.set(quiz: quizzes[sum + indexPath.row], font:self.myFont!)
         
         return cell
@@ -185,6 +188,7 @@ extension QuizzesViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    // Custom header
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: tableView.frame.width, height: 30))
         
