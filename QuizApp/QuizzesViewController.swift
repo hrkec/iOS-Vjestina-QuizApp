@@ -117,6 +117,8 @@ class QuizzesViewController: UIViewController {
             self.quizTableView.rowHeight = 120
         }, for: .touchUpInside)
         
+        quizTableView.delegate = self
+        
         view.addSubview(gradientView)
         view.addSubview(titleLabel)
         view.addSubview(getQuizButton)
@@ -172,8 +174,48 @@ extension QuizzesViewController: UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        self.idToCategory[section]!.rawValue
-    }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        self.idToCategory[section]!.rawValue
+//    }
 
+}
+
+extension QuizzesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: tableView.frame.width, height: 30))
+        
+        let label = UILabel()
+        label.frame = CGRect()
+        label.text = self.idToCategory[section]!.rawValue
+        label.font = myFont?.withSize(18)
+        label.textColor = UIColor.randomColor()
+        label.backgroundColor = .clear
+        
+        headerView.addSubview(label)
+        
+        label.autoAlignAxis(toSuperviewAxis: .horizontal)
+        label.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
+        label.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 20)
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
+}
+
+extension UIColor {
+    class func randomColor(randomAlpha: Bool = false) -> UIColor {
+        let redValue = CGFloat(arc4random_uniform(255)) / 255.0;
+        let greenValue = CGFloat(arc4random_uniform(255)) / 255.0;
+        let blueValue = CGFloat(arc4random_uniform(255)) / 255.0;
+        let alphaValue = randomAlpha ? CGFloat(arc4random_uniform(255)) / 255.0 : 1;
+
+        return UIColor(red: redValue, green: greenValue, blue: blueValue, alpha: alphaValue)
+    }
 }
