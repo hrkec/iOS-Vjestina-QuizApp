@@ -37,15 +37,27 @@ class QuizTableViewCell: UITableViewCell {
         quizDescriptionLabel.text = quiz.description
     }
     
+    func set(quiz: Quiz, font: UIFont) {
+        set(quiz: quiz)
+        quizTitleLabel.font = font.withSize(20)
+        quizLevelLabel.font = font
+        quizDescriptionLabel.font = font
+    }
+    
     private func configureViews() {
         quizImageView.layer.cornerRadius = 10
         quizImageView.clipsToBounds = true
         
         quizTitleLabel.adjustsFontSizeToFitWidth = true
+        quizTitleLabel.textColor = .white
+        quizTitleLabel.lineBreakMode = .byWordWrapping
         quizTitleLabel.numberOfLines = 0
         
         quizDescriptionLabel.lineBreakMode = .byWordWrapping
+        quizDescriptionLabel.textColor = .white
         quizDescriptionLabel.numberOfLines = 0
+        
+        quizLevelLabel.textColor = .white
     }
     
     private func addConstraints() {
@@ -56,9 +68,10 @@ class QuizTableViewCell: UITableViewCell {
         quizImageView.autoSetDimension(.width, toSize: 80)
 
         quizTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        quizTitleLabel.autoPinEdge(.top, to: .top, of: contentView, withOffset: 10)
         quizTitleLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
 
-        quizDescriptionLabel.autoPinEdge(.top, to: .bottom, of: quizTitleLabel)
+        quizDescriptionLabel.autoPinEdge(.top, to: .bottom, of: quizTitleLabel, withOffset: 10)
         quizDescriptionLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
         quizDescriptionLabel.autoPinEdge(.trailing, to: .trailing, of: contentView, withOffset: 5)
         

@@ -10,7 +10,6 @@ import UIKit
 import PureLayout
 
 class LoginViewController: UIViewController {
-//    private var titleLabel: UILabel!
     private var titleLabel: TitleLabel!
     private var gradientView: GradientView!
     private var emailField: UITextField!
@@ -19,10 +18,11 @@ class LoginViewController: UIViewController {
     private var toggleButton: UIButton!
     private var errorLabel: UILabel!
     
-    private var buttonWidth: CGFloat = 250
+    private var buttonWidth: CGFloat = 300
     private var buttonHeight: CGFloat = 40
     private var offset: CGFloat = 20
     private var cornerRadius: CGFloat = 20
+    private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,29 +32,38 @@ class LoginViewController: UIViewController {
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView(gradientStartColor: UIColor.white, gradientEndColor: UIColor.gray)
+        gradientView = GradientView()
         
         // Building a label with the app title
         titleLabel = TitleLabel()
         
+        let textFieldBackgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
+        
         // Building a textfield for email input
         emailField = UITextFieldWithPadding()
-        emailField.placeholder = "Email"
+//        emailField.placeholder = "Email"
+        emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         emailField.layer.cornerRadius = cornerRadius
-        emailField.layer.borderWidth = 1.0
+//        emailField.layer.borderWidth = 1.0
+        emailField.textColor = .white
+        emailField.backgroundColor = textFieldBackgroundColor
+        emailField.font = myFont
         
         // Building a textfield for password input
         passwordField = UITextFieldWithPadding()
-        passwordField.placeholder = "Password"
+//        passwordField.placeholder = "Password"
+        passwordField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         passwordField.isSecureTextEntry = true
         passwordField.layer.cornerRadius = cornerRadius
-//        passwordField.layer.borderColor = CGColor(red: 1, green: 0, blue: 0, alpha: 1)
-        passwordField.layer.borderWidth = 1.0
+//        passwordField.layer.borderWidth = 1.0
+        passwordField.textColor = .white
+        passwordField.backgroundColor = textFieldBackgroundColor
+        passwordField.font = myFont
         
         // Building a toggle button for password visibility in password textfield
         toggleButton = UIButton()
         toggleButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-        toggleButton.tintColor = .black
+        toggleButton.tintColor = .white
         toggleButton.addAction(.init{
             _ in self.passwordField.isSecureTextEntry.toggle()
         }, for: .touchUpInside)
@@ -62,13 +71,17 @@ class LoginViewController: UIViewController {
         // Building a button for logging in
         loginButton = UIButton()
         loginButton.setTitle("Login", for: .normal)
-        loginButton.setTitleColor(.black, for: .normal)
+        loginButton.setTitleColor(gradientView.getGradientEndColor(), for: .normal)
+        loginButton.titleLabel?.font = myFont
         loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         loginButton.layer.cornerRadius = cornerRadius
-        loginButton.layer.borderWidth = 1.0
+//        loginButton.layer.borderWidth = 1.0
+        
         // Adding login action after button is touched and showing error label if there is an error
         errorLabel = UILabel(); errorLabel.isHidden = true; errorLabel.textAlignment = .center
         errorLabel.text = "Wrong email or password"
+        errorLabel.textColor = .white
+        errorLabel.font = myFont
         loginButton.addAction(.init {
             _ in
             self.errorLabel.isHidden = true
@@ -95,10 +108,6 @@ class LoginViewController: UIViewController {
         gradientView.addConstraints()
         
         titleLabel.addConstraints()
-        
-//        passwordField.autoCenterInSuperview()
-//        passwordField.autoPinEdge(toSuperviewEdge: .top, withInset: view.bounds.height / 3)
-//        passwordField.autoPinEdge(.top, to: .top, of:)
         
         emailField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
         emailField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)

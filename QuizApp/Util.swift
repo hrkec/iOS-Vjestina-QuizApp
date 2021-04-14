@@ -19,10 +19,12 @@ class TitleLabel: UILabel {
     }
     
     func buildView() {
+        font = UIFont(name: "ArialRoundedMTBold", size: 30.0)
+//        font = UIFont.boldSystemFont(ofSize: 20.0)
         text = "QuizApp"
         textAlignment = .center
-        textColor = .red
-        adjustsFontSizeToFitWidth = true
+        textColor = .white
+//        adjustsFontSizeToFitWidth = true
     }
     
     func addConstraints() {
@@ -40,6 +42,12 @@ class GradientView: UIView {
         self.gradientStartColor = gradientStartColor
         self.gradientEndColor = gradientEndColor
         super.init(frame: .zero)
+    }
+    
+    convenience init() {
+        let gradientStartColor = UIColor(red: 0.87, green: 0.32, blue: 0.32, alpha: 1.00)
+        let gradientEndColor = UIColor(red: 0.39, green: 0.03, blue: 0.03, alpha: 1.00)
+        self.init(gradientStartColor: gradientStartColor, gradientEndColor: gradientEndColor)
     }
     
     required init?(coder: NSCoder) {
@@ -65,5 +73,13 @@ class GradientView: UIView {
     
     func addConstraints() {
         autoPinEdgesToSuperviewEdges()
+    }
+    
+    func getGradientStartColor() -> UIColor {
+        return gradientStartColor
+    }
+    
+    func getGradientEndColor() -> UIColor {
+        return gradientEndColor
     }
 }
