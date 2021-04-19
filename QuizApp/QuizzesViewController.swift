@@ -28,12 +28,25 @@ class QuizzesViewController: UIViewController {
     private var numberOfQuizzesPerCategory: [QuizCategory: Int] = [:]
     private var idToCategory: [Int: QuizCategory] = [:]
     
+    private var router: AppRouterProtocol!
+    
     private let cellIdentifier = "quizTableCell"
+    
+    convenience init(router: AppRouterProtocol) {
+        self.init()
+        
+        self.router = router
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         buildViews()
         addConstraints()
+    
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
     }
     
     private func buildViews() {
@@ -178,7 +191,7 @@ extension QuizzesViewController: UITableViewDataSource {
     }
     
 //    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        self.idToCategory[section]!.rawValue
+//        self.idToCategory[section]!.rawValue 
 //    }
 
 }
@@ -186,6 +199,8 @@ extension QuizzesViewController: UITableViewDataSource {
 extension QuizzesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let vc = QuizViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     // Custom header

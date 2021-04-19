@@ -24,6 +24,14 @@ class LoginViewController: UIViewController {
     private var cornerRadius: CGFloat = 20
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     
+    private var router: AppRouterProtocol!
+    
+    convenience init(router: AppRouterProtocol) {
+        self.init()
+        
+        self.router = router
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         buildViews()
@@ -84,9 +92,11 @@ class LoginViewController: UIViewController {
             print(status)
             switch(status){
                 case .success:
+                    self.router.showQuizzesScreen()
                     break
                 case .error( _, _):
                     self.errorLabel.isHidden = false
+                    break
             }
         }, for: .touchUpInside)
         
