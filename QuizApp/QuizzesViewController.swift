@@ -20,7 +20,7 @@ class QuizzesViewController: UIViewController {
     private var buttonHeight: CGFloat = 40
     private var offset: CGFloat = 20
     private var cornerRadius: CGFloat = 20
-    private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
+    private let myFont: UIFont! = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     
     private var quizzes: [Quiz] = []
     private var nbas: Int = 0
@@ -180,12 +180,20 @@ extension QuizzesViewController: UITableViewDataSource {
         var sum: Int = 0
         if(indexPath.section != 0) {
             for i in 0...indexPath.section {
-                sum += self.numberOfQuizzesPerCategory[self.idToCategory[i]!]!
+                if let category = self.idToCategory[i] {
+                    if let numberOfQuizzes = self.numberOfQuizzesPerCategory[category] {
+                        sum += numberOfQuizzes
+                    } else {
+                        return UITableViewCell()
+                    }
+                } else {
+                    return UITableViewCell()
+                }
             }
             sum -= 1
         }
         
-        cell.set(quiz: quizzes[sum + indexPath.row], font:self.myFont!)
+        cell.set(quiz: quizzes[sum + indexPath.row], font:self.myFont)
         
         return cell
     }
