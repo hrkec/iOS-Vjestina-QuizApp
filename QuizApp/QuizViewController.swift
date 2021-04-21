@@ -40,13 +40,12 @@ class QuizViewController: UIViewController {
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView()
+        gradientView = GradientView(superView: view)
         
-        view.addSubview(gradientView)
     }
     
     private func addConstraints() {
-        gradientView.addConstraints()
+        
         
     }
 }
