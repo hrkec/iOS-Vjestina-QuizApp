@@ -12,6 +12,7 @@ import UIKit
 // It contains image, title, description and level of quiz
 class QuizTableViewCell: UITableViewCell {
     
+    var quiz: Quiz!
     var quizImageView: UIImageView! = UIImageView(image: UIImage(named: "quiz"))
     var quizTitleLabel = UILabel()
     var quizDescriptionLabel = UILabel()
@@ -34,6 +35,7 @@ class QuizTableViewCell: UITableViewCell {
     }
     
     func set(quiz: Quiz) {
+        self.quiz = quiz
         quizTitleLabel.text = quiz.title
         quizLevelLabel.text = "Level \(String(quiz.level))/3"
         quizDescriptionLabel.text = quiz.description
@@ -46,11 +48,18 @@ class QuizTableViewCell: UITableViewCell {
         quizDescriptionLabel.font = font
     }
     
+    func getQuiz() -> Quiz{
+        if let quiz = self.quiz {
+            return quiz
+        }
+        return Quiz(id: 0, title: "def", description: "", category: .science, level: 2, imageUrl: "k", questions: [])
+    }
+    
     private func configureViews() {
         quizImageView.layer.cornerRadius = 10
         quizImageView.clipsToBounds = true
         
-        quizTitleLabel.adjustsFontSizeToFitWidth = true
+//        quizTitleLabel.adjustsFontSizeToFitWidth = true
         quizTitleLabel.textColor = .white
         quizTitleLabel.lineBreakMode = .byWordWrapping
         quizTitleLabel.numberOfLines = 0
@@ -69,9 +78,10 @@ class QuizTableViewCell: UITableViewCell {
         quizImageView.autoSetDimension(.height, toSize: 80)
         quizImageView.autoSetDimension(.width, toSize: 80)
 
-        quizTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+//        quizTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         quizTitleLabel.autoPinEdge(.top, to: .top, of: contentView, withOffset: 10)
         quizTitleLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
+        quizTitleLabel.autoPinEdge(.trailing, to: .trailing, of: contentView, withOffset: 5)
 
         quizDescriptionLabel.autoPinEdge(.top, to: .bottom, of: quizTitleLabel, withOffset: 10)
         quizDescriptionLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)

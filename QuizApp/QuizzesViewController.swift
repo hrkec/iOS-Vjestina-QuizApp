@@ -73,9 +73,11 @@ class QuizzesViewController: UIViewController {
         // Building a button for fetching quizzes
         getQuizButton = UIButton()
         getQuizButton.setTitle("Get Quiz", for: .normal)
-        getQuizButton.setTitleColor(.black, for: .normal)
+//        getQuizButton.setTitleColor(.black, for: .normal)
+        getQuizButton.setTitleColor(.white, for: .normal)
         getQuizButton.titleLabel?.font = myFont
-        getQuizButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
+        getQuizButton.layer.backgroundColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
+//        getQuizButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
         getQuizButton.layer.cornerRadius = cornerRadius
         
         // Building a table view for fetched quizzes
@@ -202,8 +204,24 @@ extension QuizzesViewController: UITableViewDataSource {
 extension QuizzesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = QuizViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        var sum: Int = 0
+        if(indexPath.section != 0) {
+            for i in 0...indexPath.section {
+                if let category = self.idToCategory[i] {
+                    if let numberOfQuizzes = self.numberOfQuizzesPerCategory[category] {
+                        sum += numberOfQuizzes
+                    } else {
+                        return
+                    }
+                } else {
+                    return
+                }
+            }
+            sum -= 1
+        }
+        
+        let quiz = quizzes[sum + indexPath.row]
+        router.showSelectedQuizScreen(quiz: quiz)
     }
     
     // Custom header

@@ -30,8 +30,8 @@ class TitleLabel: UILabel {
     }
     
     private func addConstraints() {
-//        autoPinEdge(toSuperviewEdge: .top, withInset: 60)
-        autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
+        autoPinEdge(toSuperviewEdge: .top, withInset: 40)
+//        autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
         autoAlignAxis(toSuperviewAxis: .vertical)
     }
 }

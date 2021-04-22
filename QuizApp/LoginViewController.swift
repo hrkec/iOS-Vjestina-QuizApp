@@ -54,6 +54,9 @@ class LoginViewController: UIViewController {
         emailField.textColor = .white
         emailField.backgroundColor = textFieldBackgroundColor
         emailField.font = myFont
+        emailField.addAction(.init {
+            _ in self.errorLabel.isHidden = true
+        }, for: .allEditingEvents)
         
         // Building a textfield for password input
         passwordField = UITextFieldWithPadding()
@@ -63,6 +66,9 @@ class LoginViewController: UIViewController {
         passwordField.textColor = .white
         passwordField.backgroundColor = textFieldBackgroundColor
         passwordField.font = myFont
+        passwordField.addAction(.init {
+            _ in self.errorLabel.isHidden = true
+        }, for: .allEditingEvents)
         
         // Building a toggle button for password visibility in password textfield
         toggleButton = UIButton()

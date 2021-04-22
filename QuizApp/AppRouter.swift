@@ -11,6 +11,8 @@ import UIKit
 protocol AppRouterProtocol {
     func setStartScreen(in window: UIWindow?)
     func showQuizzesScreen()
+    func showSelectedQuizScreen(quiz: Quiz)
+    func showQuizResultScreen()
 }
 
 class AppRouter: AppRouterProtocol {
@@ -33,5 +35,15 @@ class AppRouter: AppRouterProtocol {
         navigationController.pushViewController(vc, animated: true)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
+    }
+    
+    func showSelectedQuizScreen(quiz: Quiz) {
+        let vc = QuizViewController(router: self, quiz: quiz)
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func showQuizResultScreen() {
+        let vc = QuizResultViewController()
+        navigationController.pushViewController(vc, animated: true)
     }
 }
