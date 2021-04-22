@@ -8,21 +8,76 @@
 import UIKit
 
 class QuizResultViewController: UIViewController {
+    private var gradientView: GradientView!
+    private var resultsLabel: UILabel!
+    private var finishQuizButton: UIButton!
+    
+    private let myFontBold = UIFont(name: "ArialRoundedMTBold", size: 20)
+    private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
+    private let buttonBackgroundColor: CGColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
+    private let cornerRadius: CGFloat = 20
+    private let buttonWidth: CGFloat = 300
+    private let buttonHeight: CGFloat = 40
     
     private var router: AppRouterProtocol!
+    private var correctAnswers: Int!
+    private var totalAnswers: Int!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        buildViews()
+        addConstraints()
 
         // Do any additional setup after loading the view.
         // Onemoguci povratak na prosli ekran
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
-    convenience init(router: AppRouterProtocol) {
+    convenience init(router: AppRouterProtocol, correct: Int, outOf total: Int) {
         self.init()
         
         self.router = router
+        self.correctAnswers = correct
+        self.totalAnswers = total
+    }
+    
+    private func buildViews() {
+        gradientView = GradientView(superView: view)
+        
+        resultsLabel = UILabel()
+        view.addSubview(resultsLabel)
+        resultsLabel.font = myFontBold
+        resultsLabel.textColor = .white
+        resultsLabel.numberOfLines = 0
+        resultsLabel.lineBreakMode = .byWordWrapping
+        resultsLabel.text = "Results: \(String(correctAnswers))/\(String(totalAnswers))"
+        
+        finishQuizButton = UIButton()
+        view.addSubview(finishQuizButton)
+        finishQuizButton.setTitle("Finish Quiz", for: .normal)
+        finishQuizButton.setTitleColor(.white, for: .normal)
+        finishQuizButton.titleLabel?.font = myFont
+        finishQuizButton.layer.backgroundColor = buttonBackgroundColor
+        finishQuizButton.layer.cornerRadius = cornerRadius
+        finishQuizButton.addTarget(self, action: #selector(finishQuizAction), for: .touchUpInside)
+        
+    }
+    
+    private func addConstraints() {
+        resultsLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
+        resultsLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
+        resultsLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+        
+//        finishQuizButton.autoPinEdge(toSuperviewSafeArea: .top, withInset: 15)
+        finishQuizButton.autoPinEdge(.top, to: .bottom, of: resultsLabel, withOffset: 15)
+        finishQuizButton.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
+        finishQuizButton.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+//        answer0Button.autoSetDimension(.width, toSize: buttonWidth)
+        finishQuizButton.autoSetDimension(.height, toSize: buttonHeight)
     }
 
+    @objc final func finishQuizAction(sender: UIButton!) {
+        router.returnToStartScreen()
+    }
 }

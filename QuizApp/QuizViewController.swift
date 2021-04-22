@@ -29,7 +29,7 @@ class QuizViewController: UIViewController {
     private var numberOfCorrectAnswers: Int = 0
     private var totalNumberOfQuestions: Int!
     private let cornerRadius: CGFloat = 20
-    private let buttonWidth: CGFloat = 300
+//    private let buttonWidth: CGFloat = 300
     private let buttonHeight: CGFloat = 40
     private let buttonBackgroundColor: CGColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
     
@@ -112,6 +112,10 @@ class QuizViewController: UIViewController {
 //        print("Trenutno pitanje je broj \(self.numberOfAnsweredQuestions) od \(self.totalNumberOfQuestions) i pritisnut je gumb \(sender.tag)")
 //        print("Tocan odgovor je na broju \(self.quiz.questions[self.numberOfAnsweredQuestions].correctAnswer)")
         
+        if(numberOfAnsweredQuestions == totalNumberOfQuestions) {
+            numberOfAnsweredQuestions -= 1
+        }
+        
         let currentQuestion: Question = quiz.questions[numberOfAnsweredQuestions]
         let correctAnswer = currentQuestion.correctAnswer
         if (correctAnswer == sender.tag) {
@@ -122,9 +126,6 @@ class QuizViewController: UIViewController {
         // TODO: Prikazati je li tocno ili netocno odgovoreno...
         
         numberOfAnsweredQuestions += 1
-        if(numberOfCorrectAnswers == totalNumberOfQuestions) {
-            numberOfCorrectAnswers -= 1
-        }
         reloadData()
         
     }
@@ -141,7 +142,7 @@ class QuizViewController: UIViewController {
             answer2Button.setTitle(answers[2], for: .normal)
             answer3Button.setTitle(answers[3], for: .normal)
         } else {
-            router.showQuizResultScreen()
+            router.showQuizResultScreen(correct: numberOfCorrectAnswers, outOf: totalNumberOfQuestions)
         }
     }
     

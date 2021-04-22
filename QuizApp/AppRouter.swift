@@ -12,7 +12,8 @@ protocol AppRouterProtocol {
     func setStartScreen(in window: UIWindow?)
     func showQuizzesScreen()
     func showSelectedQuizScreen(quiz: Quiz)
-    func showQuizResultScreen()
+    func showQuizResultScreen(correct: Int, outOf total: Int)
+    func returnToStartScreen()
 }
 
 class AppRouter: AppRouterProtocol {
@@ -42,8 +43,12 @@ class AppRouter: AppRouterProtocol {
         navigationController.pushViewController(vc, animated: true)
     }
     
-    func showQuizResultScreen() {
-        let vc = QuizResultViewController()
+    func showQuizResultScreen(correct: Int, outOf total: Int) {
+        let vc = QuizResultViewController(router: self, correct: correct, outOf: total)
         navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func returnToStartScreen() {
+        navigationController.popToRootViewController(animated: true)
     }
 }

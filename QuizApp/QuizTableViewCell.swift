@@ -48,13 +48,6 @@ class QuizTableViewCell: UITableViewCell {
         quizDescriptionLabel.font = font
     }
     
-    func getQuiz() -> Quiz{
-        if let quiz = self.quiz {
-            return quiz
-        }
-        return Quiz(id: 0, title: "def", description: "", category: .science, level: 2, imageUrl: "k", questions: [])
-    }
-    
     private func configureViews() {
         quizImageView.layer.cornerRadius = 10
         quizImageView.clipsToBounds = true
