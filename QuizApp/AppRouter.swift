@@ -14,14 +14,22 @@ protocol AppRouterProtocol {
     func showSelectedQuizScreen(quiz: Quiz)
     func showQuizResultScreen(correct: Int, outOf total: Int)
     func returnToStartScreen()
+    func logout()
 }
 
 class AppRouter: AppRouterProtocol {
     private var navigationController: UINavigationController!
     private var window: UIWindow!
     
+    private var quizImage: UIImage! = UIImage(systemName: "stopwatch")
+    private var quizSelectedImage: UIImage! = UIImage(systemName: "stopwatch.fill")
+    
+    private var settingsImage: UIImage! = UIImage(systemName: "gearshape")
+    private var settingsSelectedImage: UIImage! = UIImage(systemName: "gearshape.fill")
+
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+        
     }
     
     func setStartScreen(in window: UIWindow?) {
@@ -33,7 +41,18 @@ class AppRouter: AppRouterProtocol {
     
     func showQuizzesScreen() {
         let vc = QuizzesViewController(router: self)
-        navigationController.pushViewController(vc, animated: true)
+        vc.tabBarItem = UITabBarItem(title: "Quiz", image: quizImage, selectedImage: quizSelectedImage)
+        
+        let svc = SettingsViewController(router: self)
+        svc.tabBarItem = UITabBarItem(title: "Settings", image: settingsImage, selectedImage: settingsSelectedImage)
+        
+        let tabBarController = UITabBarController()
+        tabBarController.tabBar.tintColor = .red
+        tabBarController.viewControllers = [vc, svc]
+        navigationController = UINavigationController()
+        setTranslucentNavBar()
+//        navigationController.pushViewController(vc, animated: true)
+        navigationController.pushViewController(tabBarController, animated: true)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
@@ -50,5 +69,17 @@ class AppRouter: AppRouterProtocol {
     
     func returnToStartScreen() {
         navigationController.popToRootViewController(animated: true)
+    }
+    
+    func logout() {
+        returnToStartScreen()
+        setStartScreen(in: window)
+    }
+    
+    private func setTranslucentNavBar (){
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
     }
 }

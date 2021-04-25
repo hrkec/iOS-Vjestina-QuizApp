@@ -9,6 +9,7 @@ import UIKit
 
 class QuizResultViewController: UIViewController {
     private var gradientView: GradientView!
+    private var titleLabel: TitleLabel!
     private var resultsLabel: UILabel!
     private var finishQuizButton: UIButton!
     
@@ -45,6 +46,8 @@ class QuizResultViewController: UIViewController {
     private func buildViews() {
         gradientView = GradientView(superView: view)
         
+        titleLabel = TitleLabel(superView: view)
+        
         resultsLabel = UILabel()
         view.addSubview(resultsLabel)
         resultsLabel.font = myFontBold
@@ -65,9 +68,8 @@ class QuizResultViewController: UIViewController {
     }
     
     private func addConstraints() {
-        resultsLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
-        resultsLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
-        resultsLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+        resultsLabel.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: 15)
+        resultsLabel.autoAlignAxis(toSuperviewAxis: .vertical)
         
 //        finishQuizButton.autoPinEdge(toSuperviewSafeArea: .top, withInset: 15)
         finishQuizButton.autoPinEdge(.top, to: .bottom, of: resultsLabel, withOffset: 15)

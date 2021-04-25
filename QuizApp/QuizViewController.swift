@@ -32,6 +32,8 @@ class QuizViewController: UIViewController {
 //    private let buttonWidth: CGFloat = 300
     private let buttonHeight: CGFloat = 40
     private let buttonBackgroundColor: CGColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
+    private let correctAnswerButtonColor: CGColor = CGColor(red: 0.04, green: 0.94, blue: 0.28, alpha: 1.00)
+    private let incorrectAnswerButtonColor: CGColor = CGColor(red: 0.93, green: 0.22, blue: 0.22, alpha: 1.00)
     
     convenience init(router: AppRouterProtocol, quiz: Quiz) {
         self.init()
@@ -51,6 +53,7 @@ class QuizViewController: UIViewController {
         navigationItem.title = "QuizApp"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: myFontBold!, NSAttributedString.Key.foregroundColor: UIColor.white]
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleReturnButton))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left"), style: .plain, target: self, action: #selector(handleReturnButton))
         navigationItem.leftBarButtonItem?.tintColor = .white
     }
     
@@ -108,6 +111,8 @@ class QuizViewController: UIViewController {
         reloadData()
     }
     
+    
+    
     @objc final func buttonAction(sender: UIButton!) {
 //        print("Trenutno pitanje je broj \(self.numberOfAnsweredQuestions) od \(self.totalNumberOfQuestions) i pritisnut je gumb \(sender.tag)")
 //        print("Tocan odgovor je na broju \(self.quiz.questions[self.numberOfAnsweredQuestions].correctAnswer)")
@@ -118,19 +123,67 @@ class QuizViewController: UIViewController {
         
         let currentQuestion: Question = quiz.questions[numberOfAnsweredQuestions]
         let correctAnswer = currentQuestion.correctAnswer
+        
         if (correctAnswer == sender.tag) {
             numberOfCorrectAnswers += 1
+            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+                sender.layer.backgroundColor = self.correctAnswerButtonColor
+            })
+//            sleep(1)
+            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+                sender.layer.backgroundColor = self.buttonBackgroundColor
+            })
+//            UIView.animate(withDuration: 1.0, animations: {
+//                sender.layer.backgroundColor = self.correctAnswerButtonColor
+//            })
+//            reloadData()
+        } else {
+            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+                sender.layer.backgroundColor = self.incorrectAnswerButtonColor
+            })
+//            sleep(1)
+            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+                sender.layer.backgroundColor = self.buttonBackgroundColor
+            })
+            
+            var correctButton: UIButton!
+            switch(correctAnswer) {
+            case 0:
+                correctButton = answer0Button
+                break
+            case 1:
+                correctButton = answer1Button
+                break
+            case 2:
+                correctButton = answer2Button
+                break
+            default:
+                correctButton = answer3Button
+                break
+            }
+            
+            UIView.transition(with: correctButton, duration: 1.0, options: .curveEaseIn, animations: {
+                correctButton.layer.backgroundColor = self.correctAnswerButtonColor
+            })
+//            sleep(1)
+            UIView.transition(with: correctButton, duration: 1.0, options: .curveEaseIn, animations: {
+                correctButton.layer.backgroundColor = self.buttonBackgroundColor
+            })
         }
         print(numberOfCorrectAnswers)
         
         // TODO: Prikazati je li tocno ili netocno odgovoreno...
         
         numberOfAnsweredQuestions += 1
+        
+//        sleep(1)
+        sender.layer.backgroundColor = self.buttonBackgroundColor
         reloadData()
         
     }
 
     private func reloadData() {
+//        sleep(1)
         if(numberOfAnsweredQuestions != totalNumberOfQuestions) {
             let question: Question = quiz.questions[numberOfAnsweredQuestions]
             questionLabel.text = question.question
