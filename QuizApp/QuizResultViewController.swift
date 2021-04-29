@@ -13,7 +13,7 @@ class QuizResultViewController: UIViewController {
     private var resultsLabel: UILabel!
     private var finishQuizButton: UIButton!
     
-    private let myFontBold = UIFont(name: "ArialRoundedMTBold", size: 20)
+    private let myFontBold = UIFont(name: "ArialRoundedMTBold", size: 100)
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     private let buttonBackgroundColor: CGColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
     private let cornerRadius: CGFloat = 20
@@ -54,7 +54,7 @@ class QuizResultViewController: UIViewController {
         resultsLabel.textColor = .white
         resultsLabel.numberOfLines = 0
         resultsLabel.lineBreakMode = .byWordWrapping
-        resultsLabel.text = "Results: \(String(correctAnswers))/\(String(totalAnswers))"
+        resultsLabel.text = "\(String(correctAnswers))/\(String(totalAnswers))"
         
         finishQuizButton = UIButton()
         view.addSubview(finishQuizButton)
@@ -68,11 +68,12 @@ class QuizResultViewController: UIViewController {
     }
     
     private func addConstraints() {
-        resultsLabel.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: 15)
+//        resultsLabel.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: 15)
         resultsLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+        resultsLabel.autoCenterInSuperview()
         
-//        finishQuizButton.autoPinEdge(toSuperviewSafeArea: .top, withInset: 15)
-        finishQuizButton.autoPinEdge(.top, to: .bottom, of: resultsLabel, withOffset: 15)
+        finishQuizButton.autoPinEdge(toSuperviewSafeArea: .bottom, withInset: 20)
+//        finishQuizButton.autoPinEdge(.top, to: .bottom, of: resultsLabel, withOffset: 15)
         finishQuizButton.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         finishQuizButton.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
 //        answer0Button.autoSetDimension(.width, toSize: buttonWidth)

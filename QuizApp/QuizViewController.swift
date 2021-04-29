@@ -11,6 +11,8 @@ import PureLayout
 
 class QuizViewController: UIViewController {
     private var gradientView: GradientView!
+    private var questionNumberLabel: UILabel!
+    private var questionTrackerView: QuestionTrackerView!
     private var questionLabel: UILabel!
     private var answer0Button: UIButton!
     private var answer1Button: UIButton!
@@ -29,11 +31,11 @@ class QuizViewController: UIViewController {
     private var numberOfCorrectAnswers: Int = 0
     private var totalNumberOfQuestions: Int!
     private let cornerRadius: CGFloat = 20
-//    private let buttonWidth: CGFloat = 300
     private let buttonHeight: CGFloat = 40
     private let buttonBackgroundColor: CGColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
     private let correctAnswerButtonColor: CGColor = CGColor(red: 0.04, green: 0.94, blue: 0.28, alpha: 1.00)
     private let incorrectAnswerButtonColor: CGColor = CGColor(red: 0.93, green: 0.22, blue: 0.22, alpha: 1.00)
+    private let animationDuration = 1.5
     
     convenience init(router: AppRouterProtocol, quiz: Quiz) {
         self.init()
@@ -64,6 +66,14 @@ class QuizViewController: UIViewController {
     private func buildViews() {
         // Building gradient view for gradient background
         gradientView = GradientView(superView: view)
+        
+        questionNumberLabel = UILabel()
+        view.addSubview(questionNumberLabel)
+        questionNumberLabel.font = myFont
+        questionNumberLabel.textColor = .white
+        
+        questionTrackerView = QuestionTrackerView(numberOfQuestions: totalNumberOfQuestions, parentView: view, aboveView: questionNumberLabel)
+//        view.addSubview(questionTrackerView)
         
         questionLabel = UILabel()
         view.addSubview(questionLabel)
@@ -114,9 +124,6 @@ class QuizViewController: UIViewController {
     
     
     @objc final func buttonAction(sender: UIButton!) {
-//        print("Trenutno pitanje je broj \(self.numberOfAnsweredQuestions) od \(self.totalNumberOfQuestions) i pritisnut je gumb \(sender.tag)")
-//        print("Tocan odgovor je na broju \(self.quiz.questions[self.numberOfAnsweredQuestions].correctAnswer)")
-        
         if(numberOfAnsweredQuestions == totalNumberOfQuestions) {
             numberOfAnsweredQuestions -= 1
         }
@@ -126,23 +133,20 @@ class QuizViewController: UIViewController {
         
         if (correctAnswer == sender.tag) {
             numberOfCorrectAnswers += 1
-            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+            questionTrackerView.setAnswer(atIndex: numberOfAnsweredQuestions, to: .correct)
+            UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.correctAnswerButtonColor
             })
-//            sleep(1)
-            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+
+            UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.buttonBackgroundColor
             })
-//            UIView.animate(withDuration: 1.0, animations: {
-//                sender.layer.backgroundColor = self.correctAnswerButtonColor
-//            })
-//            reloadData()
         } else {
-            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+            questionTrackerView.setAnswer(atIndex: numberOfAnsweredQuestions, to: .incorrect)
+            UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.incorrectAnswerButtonColor
             })
-//            sleep(1)
-            UIView.transition(with: sender, duration: 1.0, options: .curveEaseIn, animations: {
+            UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.buttonBackgroundColor
             })
             
@@ -162,29 +166,29 @@ class QuizViewController: UIViewController {
                 break
             }
             
-            UIView.transition(with: correctButton, duration: 1.0, options: .curveEaseIn, animations: {
+            UIView.transition(with: correctButton, duration: animationDuration, options: .curveEaseIn, animations: {
                 correctButton.layer.backgroundColor = self.correctAnswerButtonColor
             })
 //            sleep(1)
-            UIView.transition(with: correctButton, duration: 1.0, options: .curveEaseIn, animations: {
+            UIView.transition(with: correctButton, duration: animationDuration, options: .curveEaseIn, animations: {
                 correctButton.layer.backgroundColor = self.buttonBackgroundColor
             })
         }
         print(numberOfCorrectAnswers)
-        
-        // TODO: Prikazati je li tocno ili netocno odgovoreno...
-        
         numberOfAnsweredQuestions += 1
         
-//        sleep(1)
         sender.layer.backgroundColor = self.buttonBackgroundColor
-        reloadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, qos: .userInitiated) {
+            self.reloadData()
+        }
         
     }
 
     private func reloadData() {
 //        sleep(1)
         if(numberOfAnsweredQuestions != totalNumberOfQuestions) {
+            questionNumberLabel.text = "\(numberOfAnsweredQuestions + 1)/\(String(totalNumberOfQuestions))"
             let question: Question = quiz.questions[numberOfAnsweredQuestions]
             questionLabel.text = question.question
             
@@ -200,7 +204,16 @@ class QuizViewController: UIViewController {
     }
     
     private func addConstraints() {
-        questionLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
+        questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
+        questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
+        questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+        
+//        questionLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
+//        questionLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
+//        questionLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+        
+//        questionLabel.autoPinEdge(.top, to: .bottom, of: questionNumberLabel, withOffset: 10)
+        questionLabel.autoPinEdge(.top, to: .bottom, of: questionTrackerView, withOffset: 10)
         questionLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         questionLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
         
