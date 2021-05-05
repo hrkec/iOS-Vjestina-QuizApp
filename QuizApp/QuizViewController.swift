@@ -44,7 +44,6 @@ class QuizViewController: UIViewController {
         self.quiz = quiz
         self.quizQuestions = quiz.questions
         self.totalNumberOfQuestions = quiz.questions.count
-//        print(quiz.title)
     }
     
     override func viewDidLoad() {
@@ -54,11 +53,11 @@ class QuizViewController: UIViewController {
         
         navigationItem.title = "QuizApp"
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: myFontBold!, NSAttributedString.Key.foregroundColor: UIColor.white]
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleReturnButton))
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left"), style: .plain, target: self, action: #selector(handleReturnButton))
         navigationItem.leftBarButtonItem?.tintColor = .white
     }
     
+    // Function for handling return (back) button
     @objc func handleReturnButton() {
         self.navigationController?.popViewController(animated: true)
     }
@@ -121,8 +120,6 @@ class QuizViewController: UIViewController {
         reloadData()
     }
     
-    
-    
     @objc final func buttonAction(sender: UIButton!) {
         if(numberOfAnsweredQuestions == totalNumberOfQuestions) {
             numberOfAnsweredQuestions -= 1
@@ -131,25 +128,34 @@ class QuizViewController: UIViewController {
         let currentQuestion: Question = quiz.questions[numberOfAnsweredQuestions]
         let correctAnswer = currentQuestion.correctAnswer
         
+        // If user chose correct answer
         if (correctAnswer == sender.tag) {
             numberOfCorrectAnswers += 1
+            
+            // Set Question Tracker View to correct
             questionTrackerView.setAnswer(atIndex: numberOfAnsweredQuestions, to: .correct)
+            
+            // Animate the change of correct button color to green
             UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.correctAnswerButtonColor
             })
 
+            // Change the correct button color back to default color
             UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.buttonBackgroundColor
             })
-        } else {
+        } else { // If user chose incorrect answer
             questionTrackerView.setAnswer(atIndex: numberOfAnsweredQuestions, to: .incorrect)
+            // Animate the change of chosen (incorrect) answer button color to red (incorrect color)
             UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.incorrectAnswerButtonColor
             })
+            // Change the chosen (incorrect) button color back to default color
             UIView.transition(with: sender, duration: animationDuration, options: .curveEaseIn, animations: {
                 sender.layer.backgroundColor = self.buttonBackgroundColor
             })
             
+            // Determine which button is correct
             var correctButton: UIButton!
             switch(correctAnswer) {
             case 0:
@@ -166,18 +172,17 @@ class QuizViewController: UIViewController {
                 break
             }
             
+            // Animate the change of correct button color to green
             UIView.transition(with: correctButton, duration: animationDuration, options: .curveEaseIn, animations: {
                 correctButton.layer.backgroundColor = self.correctAnswerButtonColor
             })
-//            sleep(1)
+            // Change the correct button color back to default color
             UIView.transition(with: correctButton, duration: animationDuration, options: .curveEaseIn, animations: {
                 correctButton.layer.backgroundColor = self.buttonBackgroundColor
             })
         }
-        print(numberOfCorrectAnswers)
-        numberOfAnsweredQuestions += 1
         
-        sender.layer.backgroundColor = self.buttonBackgroundColor
+        numberOfAnsweredQuestions += 1
         
         DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration, qos: .userInitiated) {
             self.reloadData()
@@ -185,8 +190,9 @@ class QuizViewController: UIViewController {
         
     }
 
+    // Function for reloading data
+    // It loads next question after button press (answering on previous question)
     private func reloadData() {
-//        sleep(1)
         if(numberOfAnsweredQuestions != totalNumberOfQuestions) {
             questionNumberLabel.text = "\(numberOfAnsweredQuestions + 1)/\(String(totalNumberOfQuestions))"
             let question: Question = quiz.questions[numberOfAnsweredQuestions]
@@ -203,16 +209,12 @@ class QuizViewController: UIViewController {
         }
     }
     
+    // Function for adding constraints for all views
     private func addConstraints() {
         questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
         questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
         
-//        questionLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
-//        questionLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
-//        questionLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-        
-//        questionLabel.autoPinEdge(.top, to: .bottom, of: questionNumberLabel, withOffset: 10)
         questionLabel.autoPinEdge(.top, to: .bottom, of: questionTrackerView, withOffset: 10)
         questionLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         questionLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)

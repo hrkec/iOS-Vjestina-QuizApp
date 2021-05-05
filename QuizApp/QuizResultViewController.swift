@@ -30,8 +30,7 @@ class QuizResultViewController: UIViewController {
         buildViews()
         addConstraints()
 
-        // Do any additional setup after loading the view.
-        // Onemoguci povratak na prosli ekran
+        // Disabling the return to previous view
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
@@ -48,6 +47,7 @@ class QuizResultViewController: UIViewController {
         
         titleLabel = TitleLabel(superView: view)
         
+        // Label for showing quiz results
         resultsLabel = UILabel()
         view.addSubview(resultsLabel)
         resultsLabel.font = myFontBold
@@ -56,6 +56,7 @@ class QuizResultViewController: UIViewController {
         resultsLabel.lineBreakMode = .byWordWrapping
         resultsLabel.text = "\(String(correctAnswers))/\(String(totalAnswers))"
         
+        // Button for ending quiz - return to start screen
         finishQuizButton = UIButton()
         view.addSubview(finishQuizButton)
         finishQuizButton.setTitle("Finish Quiz", for: .normal)
@@ -68,18 +69,17 @@ class QuizResultViewController: UIViewController {
     }
     
     private func addConstraints() {
-//        resultsLabel.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: 15)
         resultsLabel.autoAlignAxis(toSuperviewAxis: .vertical)
         resultsLabel.autoCenterInSuperview()
         
         finishQuizButton.autoPinEdge(toSuperviewSafeArea: .bottom, withInset: 20)
-//        finishQuizButton.autoPinEdge(.top, to: .bottom, of: resultsLabel, withOffset: 15)
         finishQuizButton.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         finishQuizButton.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-//        answer0Button.autoSetDimension(.width, toSize: buttonWidth)
         finishQuizButton.autoSetDimension(.height, toSize: buttonHeight)
     }
 
+    // Function for handling the press of the finish quiz button
+    // -- returns to the start screen
     @objc final func finishQuizAction(sender: UIButton!) {
         router.returnToStartScreen()
     }

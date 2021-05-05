@@ -52,7 +52,6 @@ class QuizTableViewCell: UITableViewCell {
         quizImageView.layer.cornerRadius = 10
         quizImageView.clipsToBounds = true
         
-//        quizTitleLabel.adjustsFontSizeToFitWidth = true
         quizTitleLabel.textColor = .white
         quizTitleLabel.lineBreakMode = .byWordWrapping
         quizTitleLabel.numberOfLines = 0
