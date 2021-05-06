@@ -42,12 +42,6 @@ class QuizzesViewController: UIViewController {
         super.viewDidLoad()
         buildViews()
         addConstraints()
-    
-//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-//        self.navigationController?.navigationBar.shadowImage = UIImage()
-//        self.navigationController?.navigationBar.isTranslucent = true
-//        self.navigationController?.view.backgroundColor = UIColor.clear
-//        self.navigationController?.navigationItem.title = "KAJ JE OVO?"
     }
     
     private func buildViews() {
@@ -74,11 +68,9 @@ class QuizzesViewController: UIViewController {
         // Building a button for fetching quizzes
         getQuizButton = UIButton()
         getQuizButton.setTitle("Get Quiz", for: .normal)
-//        getQuizButton.setTitleColor(.black, for: .normal)
         getQuizButton.setTitleColor(.white, for: .normal)
         getQuizButton.titleLabel?.font = myFont
         getQuizButton.layer.backgroundColor = CGColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1)
-//        getQuizButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
         getQuizButton.layer.cornerRadius = cornerRadius
         
         // Building a table view for fetched quizzes
@@ -195,11 +187,6 @@ extension QuizzesViewController: UITableViewDataSource {
         
         return cell
     }
-    
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        self.idToCategory[section]!.rawValue 
-//    }
-
 }
 
 extension QuizzesViewController: UITableViewDelegate {

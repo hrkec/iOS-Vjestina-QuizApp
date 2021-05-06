@@ -70,7 +70,6 @@ class QuizTableViewCell: UITableViewCell {
         quizImageView.autoSetDimension(.height, toSize: 80)
         quizImageView.autoSetDimension(.width, toSize: 80)
 
-//        quizTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         quizTitleLabel.autoPinEdge(.top, to: .top, of: contentView, withOffset: 10)
         quizTitleLabel.autoPinEdge(.leading, to: .trailing, of: quizImageView, withOffset: 20)
         quizTitleLabel.autoPinEdge(.trailing, to: .trailing, of: contentView, withOffset: 5)

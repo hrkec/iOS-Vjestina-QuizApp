@@ -29,7 +29,6 @@ class AppRouter: AppRouterProtocol {
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        
     }
     
     func setStartScreen(in window: UIWindow?) {
@@ -51,7 +50,6 @@ class AppRouter: AppRouterProtocol {
         tabBarController.viewControllers = [vc, svc]
         navigationController = UINavigationController()
         setTranslucentNavBar()
-//        navigationController.pushViewController(vc, animated: true)
         navigationController.pushViewController(tabBarController, animated: true)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

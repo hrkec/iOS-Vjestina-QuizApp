@@ -72,7 +72,6 @@ class QuizViewController: UIViewController {
         questionNumberLabel.textColor = .white
         
         questionTrackerView = QuestionTrackerView(numberOfQuestions: totalNumberOfQuestions, parentView: view, aboveView: questionNumberLabel)
-//        view.addSubview(questionTrackerView)
         
         questionLabel = UILabel()
         view.addSubview(questionLabel)
@@ -222,25 +221,21 @@ class QuizViewController: UIViewController {
         answer0Button.autoPinEdge(.top, to: .bottom, of: questionLabel, withOffset: 15)
         answer0Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         answer0Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-//        answer0Button.autoSetDimension(.width, toSize: buttonWidth)
         answer0Button.autoSetDimension(.height, toSize: buttonHeight)
         
         answer1Button.autoPinEdge(.top, to: .bottom, of: answer0Button, withOffset: 10)
         answer1Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         answer1Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-//        answer1Button.autoSetDimension(.width, toSize: buttonWidth)
         answer1Button.autoSetDimension(.height, toSize: buttonHeight)
         
         answer2Button.autoPinEdge(.top, to: .bottom, of: answer1Button, withOffset: 10)
         answer2Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         answer2Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-//        answer2Button.autoSetDimension(.width, toSize: buttonWidth)
         answer2Button.autoSetDimension(.height, toSize: buttonHeight)
         
         answer3Button.autoPinEdge(.top, to: .bottom, of: answer2Button, withOffset: 10)
         answer3Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         answer3Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-//        answer3Button.autoSetDimension(.width, toSize: buttonWidth)
         answer3Button.autoSetDimension(.height, toSize: buttonHeight)
 
     }
