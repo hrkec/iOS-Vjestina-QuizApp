@@ -28,6 +28,8 @@ class QuizzesViewController: UIViewController {
     private var numberOfQuizzesPerCategory: [QuizCategory: Int] = [:]
     private var idToCategory: [Int: QuizCategory] = [:]
     
+    private var byCategory: [QuizCategory: [Quiz]]!
+    
     private var router: AppRouterProtocol!
     
     private let cellIdentifier = "quizTableCell"
@@ -97,6 +99,8 @@ class QuizzesViewController: UIViewController {
             var categories: Set<QuizCategory> = []
             var categoryId: Int = 0
             
+            self.byCategory = Dictionary(grouping: self.quizzes, by: { $0.category })
+            
             for quiz in self.quizzes {
                 for question in quiz.questions {
                     if question.question.contains("NBA") {
@@ -165,25 +169,13 @@ extension QuizzesViewController: UITableViewDataSource {
         
         cell.backgroundColor = .clear
         
-        // Assuming quizzes are already sorted by categories
-        // Determining index of quiz to show in a table cell by indexPath
-        var sum: Int = 0
-        if(indexPath.section != 0) {
-            for i in 0...indexPath.section {
-                if let category = self.idToCategory[i] {
-                    if let numberOfQuizzes = self.numberOfQuizzesPerCategory[category] {
-                        sum += numberOfQuizzes
-                    } else {
-                        return UITableViewCell()
-                    }
-                } else {
-                    return UITableViewCell()
-                }
+        var quiz: Quiz!
+        if let category = self.idToCategory[indexPath.section] {
+            if let quizzesOfCategory = self.byCategory[category] {
+                quiz = quizzesOfCategory[indexPath.row]
             }
-            sum -= 1
         }
-        
-        cell.set(quiz: quizzes[sum + indexPath.row], font:self.myFont)
+        cell.set(quiz: quiz, font: self.myFont)
         
         return cell
     }
@@ -192,23 +184,14 @@ extension QuizzesViewController: UITableViewDataSource {
 extension QuizzesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        var sum: Int = 0
-        if(indexPath.section != 0) {
-            for i in 0...indexPath.section {
-                if let category = self.idToCategory[i] {
-                    if let numberOfQuizzes = self.numberOfQuizzesPerCategory[category] {
-                        sum += numberOfQuizzes
-                    } else {
-                        return
-                    }
-                } else {
-                    return
-                }
+
+        var quiz: Quiz!
+        if let category = self.idToCategory[indexPath.section] {
+            if let quizzesOfCategory = self.byCategory[category] {
+                quiz = quizzesOfCategory[indexPath.row]
             }
-            sum -= 1
         }
         
-        let quiz = quizzes[sum + indexPath.row]
         router.showSelectedQuizScreen(quiz: quiz)
     }
     

@@ -7,5 +7,6 @@ target 'QuizApp' do
 
   # Pods for QuizApp
   pod 'PureLayout'
+  pod 'Reachability', '~> 3.2'
   
 end
