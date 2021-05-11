@@ -48,10 +48,12 @@ class QuizzesViewController: UIViewController {
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
         // Building a label with the app title
-        titleLabel = TitleLabel(superView: view)
+        titleLabel = TitleLabel()
+        view.addSubview(titleLabel)
         
         funFactLabel = UILabel()
         funFactLabel.isHidden = true
@@ -139,6 +141,9 @@ class QuizzesViewController: UIViewController {
     }
     
     private func addConstraints() {
+        gradientView.addConstraints()
+        
+        titleLabel.addConstraints()
         
         getQuizButton.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
         getQuizButton.autoAlignAxis(toSuperviewAxis: .vertical)

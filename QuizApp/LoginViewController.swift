@@ -40,10 +40,12 @@ class LoginViewController: UIViewController {
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
         // Building a label with the app title
-        titleLabel = TitleLabel(superView: view)
+        titleLabel = TitleLabel()
+        view.addSubview(titleLabel)
         
         let textFieldBackgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
         
@@ -114,6 +116,10 @@ class LoginViewController: UIViewController {
     }
     
     private func addConstraints() {
+        gradientView.addConstraints()
+        
+        titleLabel.addConstraints()
+        
         emailField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
         emailField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)
         emailField.autoAlignAxis(toSuperviewAxis: .vertical)

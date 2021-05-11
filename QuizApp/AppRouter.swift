@@ -12,6 +12,7 @@ protocol AppRouterProtocol {
     func setStartScreen(in window: UIWindow?)
     func showQuizzesScreen()
     func showSelectedQuizScreen(quiz: Quiz)
+    func leaveQuiz()
     func showQuizResultScreen(correct: Int, outOf total: Int)
     func returnToStartScreen()
     func logout()
@@ -29,6 +30,7 @@ class AppRouter: AppRouterProtocol {
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+        setTranslucentNavBar()
     }
     
     func setStartScreen(in window: UIWindow?) {
@@ -48,9 +50,7 @@ class AppRouter: AppRouterProtocol {
         let tabBarController = UITabBarController()
         tabBarController.tabBar.tintColor = .red
         tabBarController.viewControllers = [vc, svc]
-        navigationController = UINavigationController()
-        setTranslucentNavBar()
-        navigationController.pushViewController(tabBarController, animated: true)
+        navigationController.viewControllers = [tabBarController]
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
@@ -58,6 +58,10 @@ class AppRouter: AppRouterProtocol {
     func showSelectedQuizScreen(quiz: Quiz) {
         let vc = QuizViewController(router: self, quiz: quiz)
         navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func leaveQuiz() {
+        navigationController.popViewController(animated: true)
     }
     
     func showQuizResultScreen(correct: Int, outOf total: Int) {

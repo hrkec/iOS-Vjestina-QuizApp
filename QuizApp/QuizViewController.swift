@@ -14,10 +14,7 @@ class QuizViewController: UIViewController {
     private var questionNumberLabel: UILabel!
     private var questionTrackerView: QuestionTrackerView!
     private var questionLabel: UILabel!
-    private var answer0Button: UIButton!
-    private var answer1Button: UIButton!
-    private var answer2Button: UIButton!
-    private var answer3Button: UIButton!
+    private var answerButtons: [UIButton]!
     
     private let myFontBold = UIFont(name: "ArialRoundedMTBold", size: 20)
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
@@ -44,6 +41,7 @@ class QuizViewController: UIViewController {
         self.quiz = quiz
         self.quizQuestions = quiz.questions
         self.totalNumberOfQuestions = quiz.questions.count
+        self.answerButtons = []
     }
     
     override func viewDidLoad() {
@@ -59,12 +57,13 @@ class QuizViewController: UIViewController {
     
     // Function for handling return (back) button
     @objc func handleReturnButton() {
-        self.navigationController?.popViewController(animated: true)
+        router.leaveQuiz()
     }
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
         questionNumberLabel = UILabel()
         view.addSubview(questionNumberLabel)
@@ -79,51 +78,22 @@ class QuizViewController: UIViewController {
         questionLabel.textColor = .white
         questionLabel.numberOfLines = 0
         questionLabel.lineBreakMode = .byWordWrapping
-        
-        answer0Button = UIButton()
-        view.addSubview(answer0Button)
-        answer0Button.setTitleColor(.white, for: .normal)
-        answer0Button.titleLabel?.font = myFont
-        answer0Button.layer.backgroundColor = buttonBackgroundColor
-        answer0Button.layer.cornerRadius = cornerRadius
-        answer0Button.tag = 0
-        answer0Button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
-        answer1Button = UIButton()
-        view.addSubview(answer1Button)
-        answer1Button.setTitleColor(.white, for: .normal)
-        answer1Button.titleLabel?.font = myFont
-        answer1Button.layer.backgroundColor = buttonBackgroundColor
-        answer1Button.layer.cornerRadius = cornerRadius
-        answer1Button.tag = 1
-        answer1Button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
-        answer2Button = UIButton()
-        view.addSubview(answer2Button)
-        answer2Button.setTitleColor(.white, for: .normal)
-        answer2Button.titleLabel?.font = myFont
-        answer2Button.layer.backgroundColor = buttonBackgroundColor
-        answer2Button.layer.cornerRadius = cornerRadius
-        answer2Button.tag = 2
-        answer2Button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
-        answer3Button = UIButton()
-        view.addSubview(answer3Button)
-        answer3Button.setTitleColor(.white, for: .normal)
-        answer3Button.titleLabel?.font = myFont
-        answer3Button.layer.backgroundColor = buttonBackgroundColor
-        answer3Button.layer.cornerRadius = cornerRadius
-        answer3Button.tag = 3
-        answer3Button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
+    
+        for i in 0...(quiz.questions[0].answers.count - 1) {
+            let button = UIButton()
+            view.addSubview(button)
+            button.setTitleColor(.white, for: .normal)
+            button.titleLabel?.font = myFont
+            button.layer.backgroundColor = buttonBackgroundColor
+            button.layer.cornerRadius = cornerRadius
+            button.tag = i
+            button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+            answerButtons.append(button)
+        }
         reloadData()
     }
     
     @objc final func buttonAction(sender: UIButton!) {
-        if(numberOfAnsweredQuestions == totalNumberOfQuestions) {
-            numberOfAnsweredQuestions -= 1
-        }
-        
         let currentQuestion: Question = quiz.questions[numberOfAnsweredQuestions]
         let correctAnswer = currentQuestion.correctAnswer
         
@@ -155,21 +125,7 @@ class QuizViewController: UIViewController {
             })
             
             // Determine which button is correct
-            var correctButton: UIButton!
-            switch(correctAnswer) {
-            case 0:
-                correctButton = answer0Button
-                break
-            case 1:
-                correctButton = answer1Button
-                break
-            case 2:
-                correctButton = answer2Button
-                break
-            default:
-                correctButton = answer3Button
-                break
-            }
+            let correctButton: UIButton! = answerButtons[correctAnswer]
             
             // Animate the change of correct button color to green
             UIView.transition(with: correctButton, duration: animationDuration, options: .curveEaseIn, animations: {
@@ -199,10 +155,11 @@ class QuizViewController: UIViewController {
             
             let answers: [String] = question.answers
             
-            answer0Button.setTitle(answers[0], for: .normal)
-            answer1Button.setTitle(answers[1], for: .normal)
-            answer2Button.setTitle(answers[2], for: .normal)
-            answer3Button.setTitle(answers[3], for: .normal)
+            for i in 0...(answerButtons.count - 1) {
+                print(i)
+                let button = answerButtons[i]
+                button.setTitle(answers[i], for: .normal)
+            }
         } else {
             router.showQuizResultScreen(correct: numberOfCorrectAnswers, outOf: totalNumberOfQuestions)
         }
@@ -210,6 +167,8 @@ class QuizViewController: UIViewController {
     
     // Function for adding constraints for all views
     private func addConstraints() {
+        gradientView.addConstraints()
+        
         questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
         questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         questionNumberLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
@@ -218,25 +177,17 @@ class QuizViewController: UIViewController {
         questionLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         questionLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
         
-        answer0Button.autoPinEdge(.top, to: .bottom, of: questionLabel, withOffset: 15)
-        answer0Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
-        answer0Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-        answer0Button.autoSetDimension(.height, toSize: buttonHeight)
-        
-        answer1Button.autoPinEdge(.top, to: .bottom, of: answer0Button, withOffset: 10)
-        answer1Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
-        answer1Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-        answer1Button.autoSetDimension(.height, toSize: buttonHeight)
-        
-        answer2Button.autoPinEdge(.top, to: .bottom, of: answer1Button, withOffset: 10)
-        answer2Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
-        answer2Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-        answer2Button.autoSetDimension(.height, toSize: buttonHeight)
-        
-        answer3Button.autoPinEdge(.top, to: .bottom, of: answer2Button, withOffset: 10)
-        answer3Button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
-        answer3Button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
-        answer3Button.autoSetDimension(.height, toSize: buttonHeight)
-
+        for i in 0...(answerButtons.count - 1) {
+            let button = answerButtons[i]
+            if(i == 0) {
+                button.autoPinEdge(.top, to: .bottom, of: questionLabel, withOffset: 15)
+            }
+            else {
+                button.autoPinEdge(.top, to: .bottom, of: answerButtons[i - 1], withOffset: 10)
+            }
+            button.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
+            button.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+            button.autoSetDimension(.height, toSize: buttonHeight)
+        }
     }
 }

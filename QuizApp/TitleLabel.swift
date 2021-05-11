@@ -9,11 +9,9 @@ import Foundation
 import UIKit
 
 class TitleLabel: UILabel {
-    init(superView: UIView) {
+    init() {
         super.init(frame: .zero)
         buildView()
-        superView.addSubview(self)
-        addConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -22,16 +20,14 @@ class TitleLabel: UILabel {
     
     private func buildView() {
         font = UIFont(name: "ArialRoundedMTBold", size: 30.0)
-//        font = UIFont.boldSystemFont(ofSize: 20.0)
         text = "QuizApp"
         textAlignment = .center
         textColor = .white
-//        adjustsFontSizeToFitWidth = true
+
     }
     
-    private func addConstraints() {
+    func addConstraints() {
         autoPinEdge(toSuperviewEdge: .top, withInset: 40)
-//        autoPinEdge(toSuperviewSafeArea: .top, withInset: 10)
         autoAlignAxis(toSuperviewAxis: .vertical)
     }
 }
