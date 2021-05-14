@@ -25,11 +25,13 @@ class LoginViewController: UIViewController {
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     
     private var router: AppRouterProtocol!
+    private var networkService: NetworkServiceProtocol!
     
-    convenience init(router: AppRouterProtocol) {
+    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol) {
         self.init()
         
         self.router = router
+        self.networkService = networkService
     }
     
     override func viewDidLoad() {
@@ -96,15 +98,21 @@ class LoginViewController: UIViewController {
         loginButton.addAction(.init {
             _ in
             self.errorLabel.isHidden = true
-            let status: LoginStatus = DataService().login(email: self.emailField.text!, password: self.passwordField.text!)
-            print(status)
-            switch(status){
-                case .success:
-                    self.router.showQuizzesScreen()
-                    break
-                case .error( _, _):
-                    self.errorLabel.isHidden = false
-                    break
+            
+            self.networkService.login(username: self.emailField.text ?? "", password: self.passwordField.text ?? "") {
+                (result: Result<Bool, RequestError>) in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(_):
+                        self.router.showQuizzesScreen()
+                        break
+                    
+                    case .failure(let error):
+                        print(error)
+                        self.errorLabel.isHidden = false
+                        break
+                    }
+                }
             }
         }, for: .touchUpInside)
         

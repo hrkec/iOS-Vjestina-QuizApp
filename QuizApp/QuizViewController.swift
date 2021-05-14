@@ -20,6 +20,7 @@ class QuizViewController: UIViewController {
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     
     private var router: AppRouterProtocol!
+    private var networkService: NetworkServiceProtocol!
     
     private var quiz: Quiz!
     private var quizQuestions: [Question]!
@@ -34,14 +35,20 @@ class QuizViewController: UIViewController {
     private let incorrectAnswerButtonColor: CGColor = CGColor(red: 0.93, green: 0.22, blue: 0.22, alpha: 1.00)
     private let animationDuration = 1.5
     
-    convenience init(router: AppRouterProtocol, quiz: Quiz) {
+    private var startTime: DispatchTime!
+    private var endTime: DispatchTime!
+    
+    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol, quiz: Quiz) {
         self.init()
         
         self.router = router
+        self.networkService = networkService
         self.quiz = quiz
         self.quizQuestions = quiz.questions
         self.totalNumberOfQuestions = quiz.questions.count
         self.answerButtons = []
+        self.startTime = DispatchTime.now()
+        self.endTime = DispatchTime.now()
     }
     
     override func viewDidLoad() {
@@ -156,12 +163,27 @@ class QuizViewController: UIViewController {
             let answers: [String] = question.answers
             
             for i in 0...(answerButtons.count - 1) {
-                print(i)
                 let button = answerButtons[i]
                 button.setTitle(answers[i], for: .normal)
             }
         } else {
+            self.endTime = DispatchTime.now()
+            let nanoTime = endTime.uptimeNanoseconds - self.startTime.uptimeNanoseconds
+            let timeInterval = Double(nanoTime) / 1_000_000_000
+//            print("Time: \(timeInterval) seconds")
             router.showQuizResultScreen(correct: numberOfCorrectAnswers, outOf: totalNumberOfQuestions)
+            networkService.sendQuizResult(quizId: quiz.id, noOfCorrect: numberOfCorrectAnswers, time: timeInterval) {
+                result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .failure(_):
+                        print("Quiz sending failure")
+                        break
+                    case .success(_):
+                        break
+                    }
+                }
+            }
         }
     }
     

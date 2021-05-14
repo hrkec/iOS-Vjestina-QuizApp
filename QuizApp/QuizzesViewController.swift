@@ -31,13 +31,15 @@ class QuizzesViewController: UIViewController {
     private var byCategory: [QuizCategory: [Quiz]]!
     
     private var router: AppRouterProtocol!
+    private var networkService: NetworkServiceProtocol!
     
     private let cellIdentifier = "quizTableCell"
     
-    convenience init(router: AppRouterProtocol) {
+    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol) {
         self.init()
         
         self.router = router
+        self.networkService = networkService
     }
     
     override func viewDidLoad() {
@@ -88,53 +90,9 @@ class QuizzesViewController: UIViewController {
         quizTableView.rowHeight = 120
         
         // Action when Get Quiz button is clicked
-        getQuizButton.addAction(.init {
-            _ in
-            self.quizzes = DataService().fetchQuizes()
-            self.funFactLabel.isHidden = false
-            self.funFactText.isHidden = false
-            self.quizTableView.isHidden = false
-            self.quizTableView.reloadData()
-            self.nbas = 0
-            self.numberOfQuizzesPerCategory = [:]
-            
-            var categories: Set<QuizCategory> = []
-            var categoryId: Int = 0
-            
-            self.byCategory = Dictionary(grouping: self.quizzes, by: { $0.category })
-            
-            for quiz in self.quizzes {
-                for question in quiz.questions {
-                    if question.question.contains("NBA") {
-                        self.nbas += 1
-                    }
-                }
-                
-                // Add categories to set of categories and enumerate them
-                if !categories.contains(quiz.category) {
-                    self.idToCategory[categoryId] = quiz.category
-                    categoryId += 1
-                    categories.insert(quiz.category)
-                }
-                
-                if let _ = self.numberOfQuizzesPerCategory[quiz.category] {
-                    self.numberOfQuizzesPerCategory[quiz.category]! += 1
-                } else {
-                    self.numberOfQuizzesPerCategory[quiz.category] = 1
-                }
-            }
+        getQuizButton.addTarget(self, action: #selector(getQuizAction), for: .touchUpInside)
 
-            self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
-            
-            self.numOfCategories = self.numberOfQuizzesPerCategory.keys.count
-            self.view.addSubview(self.quizTableView)
-            self.quizTableView.autoPinEdge(.top, to: .bottom, of: self.funFactText, withOffset: 20)
-            self.quizTableView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20)
-            self.quizTableView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10)
-            self.quizTableView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10)
-            
-        }, for: .touchUpInside)
-        
+        view.addSubview(quizTableView)
         view.addSubview(getQuizButton)
         view.addSubview(funFactLabel)
         view.addSubview(funFactText)
@@ -157,6 +115,62 @@ class QuizzesViewController: UIViewController {
         funFactText.autoPinEdge(.top, to: .bottom, of: funFactLabel, withOffset: 5)
         funFactText.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
         funFactText.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 20)
+        
+        quizTableView.autoPinEdge(.top, to: .bottom, of: funFactText, withOffset: 20)
+        quizTableView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20)
+        quizTableView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10)
+        quizTableView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10)
+    }
+    
+    @objc final func getQuizAction(sender: UIButton!) {
+        networkService.fetchQuizzes() {
+            (result: Result<[Quiz], RequestError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .failure(let error):
+                    print(error)
+                    break
+                case .success(let quizzes):
+                    self.quizzes = quizzes
+                    self.funFactLabel.isHidden = false
+                    self.funFactText.isHidden = false
+                    self.quizTableView.isHidden = false
+                    
+                    self.nbas = 0
+                    self.numberOfQuizzesPerCategory = [:]
+                    
+                    var categories: Set<QuizCategory> = []
+                    var categoryId: Int = 0
+                    
+                    self.byCategory = Dictionary(grouping: self.quizzes, by: { $0.category })
+                    
+                    for quiz in self.quizzes {
+                        for question in quiz.questions {
+                            if question.question.contains("NBA") {
+                                self.nbas += 1
+                            }
+                        }
+                        
+                        // Add categories to set of categories and enumerate them
+                        if !categories.contains(quiz.category) {
+                            self.idToCategory[categoryId] = quiz.category
+                            categoryId += 1
+                            categories.insert(quiz.category)
+                        }
+                        
+                        if let _ = self.numberOfQuizzesPerCategory[quiz.category] {
+                            self.numberOfQuizzesPerCategory[quiz.category]! += 1
+                        } else {
+                            self.numberOfQuizzesPerCategory[quiz.category] = 1
+                        }
+                    }
+                    self.numOfCategories = self.numberOfQuizzesPerCategory.keys.count
+                    self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
+                    self.quizTableView.reloadData()
+                }
+            }
+            
+        }
     }
 }
 

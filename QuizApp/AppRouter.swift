@@ -20,6 +20,7 @@ protocol AppRouterProtocol {
 
 class AppRouter: AppRouterProtocol {
     private var navigationController: UINavigationController!
+    private var networkService: NetworkServiceProtocol!
     private var window: UIWindow!
     
     private var quizImage: UIImage! = UIImage(systemName: "stopwatch")
@@ -30,18 +31,19 @@ class AppRouter: AppRouterProtocol {
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+        self.networkService = NetworkService()
         setTranslucentNavBar()
     }
     
     func setStartScreen(in window: UIWindow?) {
         self.window = window
-        let vc = LoginViewController(router: self)
+        let vc = LoginViewController(router: self, networkService: self.networkService)
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
     }
     
     func showQuizzesScreen() {
-        let vc = QuizzesViewController(router: self)
+        let vc = QuizzesViewController(router: self, networkService: self.networkService)
         vc.tabBarItem = UITabBarItem(title: "Quiz", image: quizImage, selectedImage: quizSelectedImage)
         
         let svc = SettingsViewController(router: self)
@@ -56,7 +58,7 @@ class AppRouter: AppRouterProtocol {
     }
     
     func showSelectedQuizScreen(quiz: Quiz) {
-        let vc = QuizViewController(router: self, quiz: quiz)
+        let vc = QuizViewController(router: self, networkService: self.networkService, quiz: quiz)
         navigationController.pushViewController(vc, animated: true)
     }
     
