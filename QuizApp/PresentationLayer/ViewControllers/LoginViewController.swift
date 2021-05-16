@@ -12,11 +12,12 @@ import PureLayout
 class LoginViewController: UIViewController {
     private var titleLabel: TitleLabel!
     private var gradientView: GradientView!
-    private var emailField: UITextField!
+    private var usernameField: UITextField!
     private var passwordField: UITextField!
     private var loginButton: UIButton!
     private var toggleButton: UIButton!
     private var errorLabel: UILabel!
+    private var noInternetView: NoInternetView!
     
     private var buttonWidth: CGFloat = 300
     private var buttonHeight: CGFloat = 40
@@ -49,16 +50,20 @@ class LoginViewController: UIViewController {
         titleLabel = TitleLabel()
         view.addSubview(titleLabel)
         
+        // Building a view to show if there is no internet connection available
+        noInternetView = NoInternetView()
+        view.addSubview(noInternetView)
+        
         let textFieldBackgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
         
         // Building a textfield for email input
-        emailField = UITextFieldWithPadding()
-        emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
-        emailField.layer.cornerRadius = cornerRadius
-        emailField.textColor = .white
-        emailField.backgroundColor = textFieldBackgroundColor
-        emailField.font = myFont
-        emailField.addAction(.init {
+        usernameField = UITextFieldWithPadding()
+        usernameField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+        usernameField.layer.cornerRadius = cornerRadius
+        usernameField.textColor = .white
+        usernameField.backgroundColor = textFieldBackgroundColor
+        usernameField.font = myFont
+        usernameField.addAction(.init {
             _ in self.errorLabel.isHidden = true
         }, for: .allEditingEvents)
         
@@ -99,7 +104,9 @@ class LoginViewController: UIViewController {
             _ in
             self.errorLabel.isHidden = true
             
-            self.networkService.login(username: self.emailField.text ?? "", password: self.passwordField.text ?? "") {
+            print("Is connected? \(NetworkManager.isConnectedToNetwork())")
+            
+            self.networkService.login(username: self.usernameField.text ?? "", password: self.passwordField.text ?? "") {
                 (result: Result<Bool, RequestError>) in
                 DispatchQueue.main.async {
                     switch result {
@@ -116,7 +123,7 @@ class LoginViewController: UIViewController {
             }
         }, for: .touchUpInside)
         
-        view.addSubview(emailField)
+        view.addSubview(usernameField)
         view.addSubview(passwordField)
         view.addSubview(loginButton)
         view.addSubview(toggleButton)
@@ -128,13 +135,13 @@ class LoginViewController: UIViewController {
         
         titleLabel.addConstraints()
         
-        emailField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
-        emailField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)
-        emailField.autoAlignAxis(toSuperviewAxis: .vertical)
-        emailField.autoSetDimension(.width, toSize: buttonWidth)
-        emailField.autoSetDimension(.height, toSize: buttonHeight)
+        usernameField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
+        usernameField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)
+        usernameField.autoAlignAxis(toSuperviewAxis: .vertical)
+        usernameField.autoSetDimension(.width, toSize: buttonWidth)
+        usernameField.autoSetDimension(.height, toSize: buttonHeight)
         
-        passwordField.autoPinEdge(.top, to: .bottom, of: emailField, withOffset: offset)
+        passwordField.autoPinEdge(.top, to: .bottom, of: usernameField, withOffset: offset)
         passwordField.autoAlignAxis(toSuperviewAxis: .vertical)
         passwordField.autoSetDimension(.width, toSize: buttonWidth)
         passwordField.autoSetDimension(.height, toSize: buttonHeight)

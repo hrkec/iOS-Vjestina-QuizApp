@@ -7,3 +7,4 @@ enum QuizCategory: String, Codable {
         case science = "SCIENCE"
     }
 }
+

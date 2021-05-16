@@ -8,16 +8,6 @@
 import Foundation
 import UIKit
 
-protocol AppRouterProtocol {
-    func setStartScreen(in window: UIWindow?)
-    func showQuizzesScreen()
-    func showSelectedQuizScreen(quiz: Quiz)
-    func leaveQuiz()
-    func showQuizResultScreen(correct: Int, outOf total: Int)
-    func returnToStartScreen()
-    func logout()
-}
-
 class AppRouter: AppRouterProtocol {
     private var navigationController: UINavigationController!
     private var networkService: NetworkServiceProtocol!
