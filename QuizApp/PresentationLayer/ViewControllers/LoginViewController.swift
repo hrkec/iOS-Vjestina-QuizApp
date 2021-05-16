@@ -17,7 +17,6 @@ class LoginViewController: UIViewController {
     private var loginButton: UIButton!
     private var toggleButton: UIButton!
     private var errorLabel: UILabel!
-    private var noInternetView: NoInternetView!
     
     private var buttonWidth: CGFloat = 300
     private var buttonHeight: CGFloat = 40
@@ -49,10 +48,6 @@ class LoginViewController: UIViewController {
         // Building a label with the app title
         titleLabel = TitleLabel()
         view.addSubview(titleLabel)
-        
-        // Building a view to show if there is no internet connection available
-        noInternetView = NoInternetView()
-        view.addSubview(noInternetView)
         
         let textFieldBackgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
         
@@ -104,7 +99,7 @@ class LoginViewController: UIViewController {
             _ in
             self.errorLabel.isHidden = true
             
-            print("Is connected? \(NetworkManager.isConnectedToNetwork())")
+            
             
             self.networkService.login(username: self.usernameField.text ?? "", password: self.passwordField.text ?? "") {
                 (result: Result<Bool, RequestError>) in

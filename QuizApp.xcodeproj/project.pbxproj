@@ -27,8 +27,6 @@
 		523261FB2651506E00A68AE1 /* QuizResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523261F52651506E00A68AE1 /* QuizResult.swift */; };
 		523261FC2651506E00A68AE1 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523261F62651506E00A68AE1 /* Quiz.swift */; };
 		523261FD2651506E00A68AE1 /* Quizzes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523261F72651506E00A68AE1 /* Quizzes.swift */; };
-		523262002651573900A68AE1 /* NoInternetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523261FF2651573900A68AE1 /* NoInternetView.swift */; };
-		5232620826515D2500A68AE1 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5232620726515D2500A68AE1 /* NetworkManager.swift */; };
 		523A059726165D3000E2B23D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 523A059526165D3000E2B23D /* LaunchScreen.storyboard */; };
 		528C86A72649A26000CFB707 /* NetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528C86A62649A26000CFB707 /* NetworkServiceProtocol.swift */; };
 		528C86AA2649A27D00CFB707 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528C86A92649A27D00CFB707 /* NetworkService.swift */; };
@@ -57,8 +55,6 @@
 		523261F52651506E00A68AE1 /* QuizResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuizResult.swift; sourceTree = "<group>"; };
 		523261F62651506E00A68AE1 /* Quiz.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
 		523261F72651506E00A68AE1 /* Quizzes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quizzes.swift; sourceTree = "<group>"; };
-		523261FF2651573900A68AE1 /* NoInternetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoInternetView.swift; sourceTree = "<group>"; };
-		5232620726515D2500A68AE1 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		523A058726165D2F00E2B23D /* QuizApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		523A059626165D3000E2B23D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		523A059826165D3000E2B23D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -109,7 +105,6 @@
 				523261DA26514FFB00A68AE1 /* QuizTableViewCell.swift */,
 				523261E126514FFB00A68AE1 /* TitleLabel.swift */,
 				523261E226514FFB00A68AE1 /* GradientView.swift */,
-				523261FF2651573900A68AE1 /* NoInternetView.swift */,
 			);
 			path = PresentationLayer;
 			sourceTree = "<group>";
@@ -183,7 +178,6 @@
 				528C86A62649A26000CFB707 /* NetworkServiceProtocol.swift */,
 				528C86A92649A27D00CFB707 /* NetworkService.swift */,
 				523261CD26514E4900A68AE1 /* SupportingFiles */,
-				5232620726515D2500A68AE1 /* NetworkManager.swift */,
 			);
 			path = QuizApp;
 			sourceTree = "<group>";
@@ -309,7 +303,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5232620826515D2500A68AE1 /* NetworkManager.swift in Sources */,
 				523261E826514FFB00A68AE1 /* QuizzesViewController.swift in Sources */,
 				523261E626514FFB00A68AE1 /* QuizTableViewCell.swift in Sources */,
 				523261FD2651506E00A68AE1 /* Quizzes.swift in Sources */,
@@ -324,7 +317,6 @@
 				523261E726514FFB00A68AE1 /* QuizViewController.swift in Sources */,
 				523261EA26514FFB00A68AE1 /* QuizResultViewController.swift in Sources */,
 				523261ED26514FFB00A68AE1 /* GradientView.swift in Sources */,
-				523262002651573900A68AE1 /* NoInternetView.swift in Sources */,
 				528C86AA2649A27D00CFB707 /* NetworkService.swift in Sources */,
 				523261E326514FFB00A68AE1 /* AppRouter.swift in Sources */,
 				523261EC26514FFB00A68AE1 /* TitleLabel.swift in Sources */,
