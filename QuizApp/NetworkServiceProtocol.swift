@@ -7,6 +7,7 @@
 
 import UIKit
 
+// Structure which server returns when logging in
 struct LoginData: Codable {
     var token: String
     var userId: Int

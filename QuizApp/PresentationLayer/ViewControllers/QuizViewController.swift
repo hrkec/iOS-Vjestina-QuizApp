@@ -167,10 +167,10 @@ class QuizViewController: UIViewController {
                 button.setTitle(answers[i], for: .normal)
             }
         } else {
+            // Ending a quiz, calculating time
             self.endTime = DispatchTime.now()
             let nanoTime = endTime.uptimeNanoseconds - self.startTime.uptimeNanoseconds
             let timeInterval = Double(nanoTime) / 1_000_000_000
-//            print("Time: \(timeInterval) seconds")
             router.showQuizResultScreen(correct: numberOfCorrectAnswers, outOf: totalNumberOfQuestions)
             networkService.sendQuizResult(quizId: quiz.id, noOfCorrect: numberOfCorrectAnswers, time: timeInterval) {
                 result in

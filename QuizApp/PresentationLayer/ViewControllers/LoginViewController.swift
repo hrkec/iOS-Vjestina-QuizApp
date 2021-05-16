@@ -99,8 +99,6 @@ class LoginViewController: UIViewController {
             _ in
             self.errorLabel.isHidden = true
             
-            
-            
             self.networkService.login(username: self.usernameField.text ?? "", password: self.passwordField.text ?? "") {
                 (result: Result<Bool, RequestError>) in
                 DispatchQueue.main.async {
