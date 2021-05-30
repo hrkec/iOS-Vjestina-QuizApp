@@ -32,14 +32,16 @@ class QuizzesViewController: UIViewController {
     
     private var router: AppRouterProtocol!
     private var networkService: NetworkServiceProtocol!
+    private var quizDataRepository: QuizRepositoryProtocol!
     
     private let cellIdentifier = "quizTableCell"
     
-    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol) {
+    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol, quizDataRepository: QuizRepositoryProtocol) {
         self.init()
         
         self.router = router
         self.networkService = networkService
+        self.quizDataRepository = quizDataRepository
     }
     
     override func viewDidLoad() {
@@ -123,53 +125,43 @@ class QuizzesViewController: UIViewController {
     }
     
     @objc final func getQuizAction(sender: UIButton!) {
-        networkService.fetchQuizzes() {
-            (result: Result<[Quiz], RequestError>) in
-            DispatchQueue.main.async {
-                switch result {
-                case .failure(let error):
-                    print(error)
-                    break
-                case .success(let quizzes):
-                    self.quizzes = quizzes
-                    self.funFactLabel.isHidden = false
-                    self.funFactText.isHidden = false
-                    self.quizTableView.isHidden = false
-                    
-                    self.nbas = 0
-                    self.numberOfQuizzesPerCategory = [:]
-                    
-                    var categories: Set<QuizCategory> = []
-                    var categoryId: Int = 0
-                    
-                    self.byCategory = Dictionary(grouping: self.quizzes, by: { $0.category })
-                    
-                    for quiz in self.quizzes {
-                        for question in quiz.questions {
-                            if question.question.contains("NBA") {
-                                self.nbas += 1
-                            }
-                        }
-                        
-                        // Add categories to set of categories and enumerate them
-                        if !categories.contains(quiz.category) {
-                            self.idToCategory[categoryId] = quiz.category
-                            categoryId += 1
-                            categories.insert(quiz.category)
-                        }
-                        
-                        if let _ = self.numberOfQuizzesPerCategory[quiz.category] {
-                            self.numberOfQuizzesPerCategory[quiz.category]! += 1
-                        } else {
-                            self.numberOfQuizzesPerCategory[quiz.category] = 1
-                        }
+        self.quizzes = quizDataRepository.fetchData(filter: FilterSettings(searchText: ""))
+        DispatchQueue.main.async {
+            self.funFactLabel.isHidden = false
+            self.funFactText.isHidden = false
+            self.quizTableView.isHidden = false
+            
+            self.nbas = 0
+            self.numberOfQuizzesPerCategory = [:]
+            
+            var categories: Set<QuizCategory> = []
+            var categoryId: Int = 0
+            
+            self.byCategory = Dictionary(grouping: self.quizzes, by: { $0.category })
+            
+            for quiz in self.quizzes {
+                for question in quiz.questions {
+                    if question.question.contains("NBA") {
+                        self.nbas += 1
                     }
-                    self.numOfCategories = self.numberOfQuizzesPerCategory.keys.count
-                    self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
-                    self.quizTableView.reloadData()
+                }
+                
+                // Add categories to set of categories and enumerate them
+                if !categories.contains(quiz.category) {
+                    self.idToCategory[categoryId] = quiz.category
+                    categoryId += 1
+                    categories.insert(quiz.category)
+                }
+                
+                if let _ = self.numberOfQuizzesPerCategory[quiz.category] {
+                    self.numberOfQuizzesPerCategory[quiz.category]! += 1
+                } else {
+                    self.numberOfQuizzesPerCategory[quiz.category] = 1
                 }
             }
-            
+            self.numOfCategories = self.numberOfQuizzesPerCategory.keys.count
+            self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
+            self.quizTableView.reloadData()
         }
     }
 }

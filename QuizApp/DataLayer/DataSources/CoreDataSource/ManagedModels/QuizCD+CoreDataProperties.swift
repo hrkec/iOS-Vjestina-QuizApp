@@ -2,7 +2,7 @@
 //  QuizCD+CoreDataProperties.swift
 //  
 //
-//  Created by Marin on 27.05.2021..
+//  Created by Five on 30.05.2021..
 //
 //
 
@@ -16,13 +16,13 @@ extension QuizCD {
         return NSFetchRequest<QuizCD>(entityName: "QuizCD")
     }
 
+    @NSManaged public var category: String
     @NSManaged public var identifier: Int64
-    @NSManaged public var title: String?
-    @NSManaged public var attribute: String?
-    @NSManaged public var category: String?
+    @NSManaged public var imageURL: String
     @NSManaged public var level: Int16
-    @NSManaged public var imageUrl: String?
-    @NSManaged public var questions: NSSet?
+    @NSManaged public var quizDescription: String
+    @NSManaged public var title: String
+    @NSManaged public var questions: NSSet
 
 }
 

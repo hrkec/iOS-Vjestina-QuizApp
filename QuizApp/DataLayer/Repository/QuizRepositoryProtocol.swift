@@ -6,7 +6,6 @@
 //
 
 protocol QuizRepositoryProtocol {
-    func fetchRemoteData() throws
-    func fetchLocalData(filter: FilterSettings) -> [Quiz]
+    func fetchData(filter: FilterSettings) -> [Quiz]
     func deleteLocalData(withId id: Int)
 }

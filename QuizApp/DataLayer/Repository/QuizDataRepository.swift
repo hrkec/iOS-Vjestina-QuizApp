@@ -6,21 +6,32 @@
 //
 
 class QuizDataRepository: QuizRepositoryProtocol {
-    private let jsonDataSource: QuizJsonSourceProtocol
+    private let networkDataSource: QuizNetworkSourceProtocol
     private let coreDataSource: QuizCoreDataSourceProtocol
     
-    init(jsonDataSource: QuizJsonSourceProtocol, coreDataSource: QuizCoreDataSourceProtocol) {
-        self.jsonDataSource = jsonDataSource
-        self.coreDataSource = coreDataSource
+    init(networkService: NetworkServiceProtocol) {
+        self.coreDataSource = QuizCoreDataSource()
+        self.networkDataSource = QuizNetworkDataSource(networkService: networkService, quizCoreDataSource: coreDataSource)
     }
     
-    func fetchRemoteData() throws {
-        let quizzes = try jsonDataSource.fetchQuizzesFromJson()
-        coreDataSource.saveNewQuizzes(quizzes)
+    func fetchData(filter: FilterSettings) -> [Quiz] {
+        var quizzes: [Quiz] = []
+        
+        // if network is connected, fetch quizzes from network (and save in core data)
+        if(NetworkMonitor.shared.isConnected){
+            networkDataSource.fetchQuizzesFromNetwork()
+        }
+        quizzes = coreDataSource.fetchQuizzesFromCoreData(filter: filter)
+        
+        return quizzes
+    }
+    
+    func fetchRemoteData() {
+        networkDataSource.fetchQuizzesFromNetwork()
     }
     
     func fetchLocalData(filter: FilterSettings) -> [Quiz] {
-        coreDataSource.fetchQuizzesFromCoreData(filter: filter)
+        return coreDataSource.fetchQuizzesFromCoreData(filter: filter)
     }
     
     func deleteLocalData(withId id: Int) {

@@ -21,9 +21,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-//        let vc = LoginViewController()
-//        let vc = QuizzesViewController() 
-//        let navigationController = UINavigationController(rootViewController: vc)
         let navigationController = UINavigationController()
         router = AppRouter(navigationController: navigationController)
         router.setStartScreen(in: window)

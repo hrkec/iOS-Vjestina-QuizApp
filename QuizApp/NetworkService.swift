@@ -8,19 +8,20 @@
 import UIKit
 
 class NetworkService: NetworkServiceProtocol {
-    private let baseURL: String! = "iosquiz.herokuapp.com"
-    private let apiToken: String! = "api_token"
-    private let userId: String! = "user_id"
+    private let baseURL: String = "iosquiz.herokuapp.com"
+    private let apiToken: String = "api_token"
+    private let userId: String = "user_id"
     private let userDefaults = UserDefaults.standard
+    private let session = URLSession(configuration: URLSessionConfiguration.default)
     
-    func login(username: String, password: String, completionHandler: @escaping (Result<Bool, RequestError>) -> Void) {
-        let session = URLSession(configuration: URLSessionConfiguration.default)
+    func login(username: String, password: String, completionHandler: @escaping (Result<LoginData, RequestError>) -> Void) {
+        
         var params: [String: String] = [:]
         params["username"] = username
         params["password"] = password
         let urlComponent = addURLComponent(path: "/api/session", params: params)
         guard let url = urlComponent.url else {
-            completionHandler(.failure(.serverError))
+            completionHandler(.failure(.urlError))
             return
         }
         
@@ -30,7 +31,7 @@ class NetworkService: NetworkServiceProtocol {
         session.dataTask(with: urlRequest){
             data, response, error in
             if error != nil {
-                completionHandler(.failure(.serverError))
+                completionHandler(.failure(.clientError))
                 return
             }
             
@@ -57,12 +58,11 @@ class NetworkService: NetworkServiceProtocol {
             self.userDefaults.set(loginData.token, forKey: self.apiToken)
             self.userDefaults.set(loginData.userId, forKey: self.userId)
             
-            completionHandler(.success(true))
+            completionHandler(.success(loginData))
         }.resume()
     }
     
     func fetchQuizzes(completionHandler: @escaping (Result<[Quiz], RequestError>) -> Void) {
-        let session = URLSession(configuration: URLSessionConfiguration.default)
         let urlComponent = addURLComponent(path: "/api/quizzes")
         guard let url = urlComponent.url else {
             print("URL error")
@@ -109,8 +109,7 @@ class NetworkService: NetworkServiceProtocol {
         }.resume()
     }
     
-    func sendQuizResult(quizId: Int, noOfCorrect: Int, time: Double, completionHandler: @escaping (Result<Bool, RequestError>) -> Void) {
-        let session = URLSession(configuration: URLSessionConfiguration.default)
+    func sendQuizResult(quizId: Int, noOfCorrect: Int, time: Double, completionHandler: @escaping (Result<String, RequestError>) -> Void) {
         let urlComponent = addURLComponent(path: "/api/result")
         
         guard let url = urlComponent.url else {
@@ -146,32 +145,28 @@ class NetworkService: NetworkServiceProtocol {
             switch response.statusCode {
             case 401:
                 print("Error 401")
-                completionHandler(.failure(.clientError))
+                completionHandler(.failure(.serverError))
                 break
             case 403:
                 print("Error 403")
-                completionHandler(.failure(.clientError))
+                completionHandler(.failure(.serverError))
                 break
             case 404:
                 print("Error 404")
-                completionHandler(.failure(.clientError))
+                completionHandler(.failure(.serverError))
                 break
             case 400:
                 print("Error 400")
-                completionHandler(.failure(.clientError))
+                completionHandler(.failure(.serverError))
                 break
             case 200:
                 print("OK - quiz result sent")
-                completionHandler(.success(true))
+                completionHandler(.success("OK"))
             default:
                 completionHandler(.failure(.clientError))
                 break
             }
         }.resume()
-        
-        
-        
-        
     }
     
     private func addURLComponent(path: String, params:[String: String] = [:]) -> URLComponents {

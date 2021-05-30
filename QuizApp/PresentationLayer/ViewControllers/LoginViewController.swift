@@ -98,22 +98,7 @@ class LoginViewController: UIViewController {
         loginButton.addAction(.init {
             _ in
             self.errorLabel.isHidden = true
-            
-            self.networkService.login(username: self.usernameField.text ?? "", password: self.passwordField.text ?? "") {
-                (result: Result<Bool, RequestError>) in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(_):
-                        self.router.showQuizzesScreen()
-                        break
-                    
-                    case .failure(let error):
-                        print(error)
-                        self.errorLabel.isHidden = false
-                        break
-                    }
-                }
-            }
+            self.handleLogin()
         }, for: .touchUpInside)
         
         view.addSubview(usernameField)
@@ -150,6 +135,24 @@ class LoginViewController: UIViewController {
         
         errorLabel.autoPinEdge(.top, to: .bottom, of: loginButton, withOffset: offset)
         errorLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+    }
+    
+    private func handleLogin() {
+        self.networkService.login(username: self.usernameField.text ?? "", password: self.passwordField.text ?? "") {
+            (result: Result<LoginData, RequestError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.router.showQuizzesScreen()
+                    break
+                
+                case .failure(let error):
+                    print(error)
+                    self.errorLabel.isHidden = false
+                    break
+                }
+            }
+        }
     }
 }
 
