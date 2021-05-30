@@ -38,7 +38,6 @@ class SearchQuizViewController: UIViewController{
         
         self.router = router
         self.quizDataRepository = quizDataRepository
-//        self.currentFilterSettings = FilterSettings()
     }
     
     override func viewDidLoad() {
@@ -51,8 +50,6 @@ class SearchQuizViewController: UIViewController{
     private func fetchData(filter: FilterSettings) {
         self.quizzes = quizDataRepository.fetchData(filter: filter)
         DispatchQueue.main.async {
-//            self.quizTableView.isHidden = false
-        
             self.numberOfQuizzesPerCategory = [:]
             
             var categories: Set<QuizCategory> = []

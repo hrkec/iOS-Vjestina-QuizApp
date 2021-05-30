@@ -17,6 +17,7 @@ class LoginViewController: UIViewController {
     private var loginButton: UIButton!
     private var toggleButton: UIButton!
     private var errorLabel: UILabel!
+    private var noConnectionLabel: UILabel!
     
     private var buttonWidth: CGFloat = 300
     private var buttonHeight: CGFloat = 40
@@ -48,6 +49,14 @@ class LoginViewController: UIViewController {
         // Building a label with the app title
         titleLabel = TitleLabel()
         view.addSubview(titleLabel)
+        
+        noConnectionLabel = UILabel()
+        view.addSubview(noConnectionLabel)
+        noConnectionLabel.font = myFont
+        noConnectionLabel.text = "No Internet connection!"
+        noConnectionLabel.textAlignment = .center
+        noConnectionLabel.textColor = .white
+        noConnectionLabel.isHidden = true
         
         let textFieldBackgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
         
@@ -101,6 +110,14 @@ class LoginViewController: UIViewController {
             self.handleLogin()
         }, for: .touchUpInside)
         
+        if !NetworkMonitor.shared.isConnected {
+            noConnectionLabel.isHidden = false
+            usernameField.isHidden = true
+            passwordField.isHidden = true
+            toggleButton.isHidden = true
+            loginButton.isHidden = true
+        }
+        
         view.addSubview(usernameField)
         view.addSubview(passwordField)
         view.addSubview(loginButton)
@@ -112,6 +129,10 @@ class LoginViewController: UIViewController {
         gradientView.addConstraints()
         
         titleLabel.addConstraints()
+        
+        noConnectionLabel.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
+        noConnectionLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 15)
+        noConnectionLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 15)
         
         usernameField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
         usernameField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)
