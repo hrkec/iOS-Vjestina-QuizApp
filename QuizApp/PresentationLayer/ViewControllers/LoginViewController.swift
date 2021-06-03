@@ -24,6 +24,9 @@ class LoginViewController: UIViewController {
     private var offset: CGFloat = 20
     private var cornerRadius: CGFloat = 20
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
+    private let animationOption = UIView.AnimationOptions.curveEaseInOut
+    private let animationDuration = 1.5
+    private let delayStep = 0.25
     
     private var router: AppRouterProtocol!
     private var networkService: NetworkServiceProtocol!
@@ -33,6 +36,33 @@ class LoginViewController: UIViewController {
         
         self.router = router
         self.networkService = networkService
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        usernameField.transform = usernameField.transform.translatedBy(x: -view.frame.width, y: 0)
+        passwordField.transform = passwordField.transform.translatedBy(x: -view.frame.width, y: 0)
+        toggleButton.transform = toggleButton.transform.translatedBy(x: -view.frame.width, y: 0)
+        loginButton.transform = loginButton.transform.translatedBy(x: -view.frame.width, y: 0)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        UIView.animate(withDuration: animationDuration,
+                       delay: 0, options: animationOption,
+                       animations: {
+                        self.usernameField.transform = .identity
+                       })
+        UIView.animate(withDuration: animationDuration, delay: delayStep, options: animationOption, animations: {
+            self.passwordField.transform = .identity
+            self.toggleButton.transform = .identity
+        })
+        UIView.animate(withDuration: animationDuration, delay: 2 * delayStep, options: animationOption, animations: {
+            self.loginButton.transform = .identity
+        })
+        
     }
     
     override func viewDidLoad() {
@@ -49,6 +79,15 @@ class LoginViewController: UIViewController {
         // Building a label with the app title
         titleLabel = TitleLabel()
         view.addSubview(titleLabel)
+        titleLabel.alpha = 0
+        titleLabel.transform = titleLabel.transform.scaledBy(x: 0.1, y: 0.1)
+        UIView.animate(withDuration: animationDuration,
+                       delay: 0,
+                       options: animationOption,
+                       animations: {
+                        self.titleLabel.transform = self.titleLabel.transform.scaledBy(x: 10, y: 10)
+                        self.titleLabel.alpha = 1
+                       })
         
         noConnectionLabel = UILabel()
         view.addSubview(noConnectionLabel)
@@ -70,6 +109,10 @@ class LoginViewController: UIViewController {
         usernameField.addAction(.init {
             _ in self.errorLabel.isHidden = true
         }, for: .allEditingEvents)
+        usernameField.alpha = 0
+        UIView.animate(withDuration: animationDuration, delay: 0, options: animationOption, animations: {
+            self.usernameField.alpha = 1
+        })
         
         // Building a textfield for password input
         passwordField = UITextFieldWithPadding()
@@ -82,6 +125,7 @@ class LoginViewController: UIViewController {
         passwordField.addAction(.init {
             _ in self.errorLabel.isHidden = true
         }, for: .allEditingEvents)
+        passwordField.alpha = 0
         
         // Building a toggle button for password visibility in password textfield
         toggleButton = UIButton()
@@ -90,6 +134,11 @@ class LoginViewController: UIViewController {
         toggleButton.addAction(.init{
             _ in self.passwordField.isSecureTextEntry.toggle()
         }, for: .touchUpInside)
+        toggleButton.alpha = 0
+        UIView.animate(withDuration: animationDuration, delay: delayStep, options: animationOption, animations: {
+            self.passwordField.alpha = 1
+            self.toggleButton.alpha = 1
+        })
         
         // Building a button for logging in
         loginButton = UIButton()
@@ -98,6 +147,10 @@ class LoginViewController: UIViewController {
         loginButton.titleLabel?.font = myFont
         loginButton.layer.backgroundColor = CGColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         loginButton.layer.cornerRadius = cornerRadius
+        loginButton.alpha = 0
+        UIView.animate(withDuration: animationDuration, delay: 2 * delayStep, options: animationOption, animations: {
+            self.loginButton.alpha = 1
+        })
         
         // Adding login action after button is touched and showing error label if there is an error
         errorLabel = UILabel(); errorLabel.isHidden = true; errorLabel.textAlignment = .center
@@ -164,7 +217,8 @@ class LoginViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(_):
-                    self.router.showQuizzesScreen()
+                    self.animateLogin()
+//                    self.router.showQuizzesScreen()
                     break
                 
                 case .failure(let error):
@@ -174,6 +228,35 @@ class LoginViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    private func animateLogin(){
+        UIView.animate(withDuration: animationDuration,
+                       delay: 0,
+                       options: animationOption,
+                       animations: {
+                        self.titleLabel.transform = self.titleLabel.transform.translatedBy(x: 0, y: -self.view.frame.height)
+                       })
+        UIView.animate(withDuration: animationDuration,
+                       delay: delayStep,
+                       options: animationOption,
+                       animations: {
+                        self.usernameField.transform = self.usernameField.transform.translatedBy(x: 0, y: -self.view.frame.height)
+                       })
+        UIView.animate(withDuration: animationDuration,
+                       delay: 2 * delayStep,
+                       options: animationOption,
+                       animations: {
+                        self.passwordField.transform = self.passwordField.transform.translatedBy(x: 0, y: -self.view.frame.height)
+                        self.toggleButton.transform = self.toggleButton.transform.translatedBy(x: 0, y: -self.view.frame.height)
+                       })
+        UIView.animate(withDuration: animationDuration,
+                       delay: 3 * delayStep,
+                       options: animationOption,
+                       animations: {
+                        self.loginButton.transform = self.loginButton.transform.translatedBy(x: 0, y: -self.view.frame.height)
+                       }, completion: { _ in self.router.showQuizzesScreen() })
+        
     }
 }
 
