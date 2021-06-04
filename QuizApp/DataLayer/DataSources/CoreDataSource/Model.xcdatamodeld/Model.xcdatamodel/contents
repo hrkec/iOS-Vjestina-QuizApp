@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20D80" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="QuestionCD" representedClassName="QuestionCD" syncable="YES">
+        <attribute name="answers" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="correctAnswer" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="identifier" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="question" attributeType="String"/>
+        <relationship name="quiz" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QuizCD" inverseName="questions" inverseEntity="QuizCD"/>
+    </entity>
+    <entity name="QuizCD" representedClassName="QuizCD" syncable="YES">
+        <attribute name="category" attributeType="String"/>
+        <attribute name="identifier" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imageURL" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="level" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="quizDescription" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+        <relationship name="questions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="QuestionCD" inverseName="quiz" inverseEntity="QuestionCD"/>
+    </entity>
+    <elements>
+        <element name="QuestionCD" positionX="-63" positionY="-18" width="128" height="104"/>
+        <element name="QuizCD" positionX="-54" positionY="18" width="128" height="134"/>
+    </elements>
+</model>

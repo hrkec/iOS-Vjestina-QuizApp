@@ -28,14 +28,20 @@ class QuizzesViewController: UIViewController {
     private var numberOfQuizzesPerCategory: [QuizCategory: Int] = [:]
     private var idToCategory: [Int: QuizCategory] = [:]
     
+    private var byCategory: [QuizCategory: [Quiz]]!
+    
     private var router: AppRouterProtocol!
+    private var networkService: NetworkServiceProtocol!
+    private var quizDataRepository: QuizRepositoryProtocol!
     
     private let cellIdentifier = "quizTableCell"
     
-    convenience init(router: AppRouterProtocol) {
+    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol, quizDataRepository: QuizRepositoryProtocol) {
         self.init()
         
         self.router = router
+        self.networkService = networkService
+        self.quizDataRepository = quizDataRepository
     }
     
     override func viewDidLoad() {
@@ -46,10 +52,12 @@ class QuizzesViewController: UIViewController {
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
         // Building a label with the app title
-        titleLabel = TitleLabel(superView: view)
+        titleLabel = TitleLabel()
+        view.addSubview(titleLabel)
         
         funFactLabel = UILabel()
         funFactLabel.isHidden = true
@@ -84,18 +92,52 @@ class QuizzesViewController: UIViewController {
         quizTableView.rowHeight = 120
         
         // Action when Get Quiz button is clicked
-        getQuizButton.addAction(.init {
-            _ in
-            self.quizzes = DataService().fetchQuizes()
+        getQuizButton.addTarget(self, action: #selector(getQuizAction), for: .touchUpInside)
+
+        view.addSubview(quizTableView)
+        view.addSubview(getQuizButton)
+        view.addSubview(funFactLabel)
+        view.addSubview(funFactText)
+    }
+    
+    private func addConstraints() {
+        gradientView.addConstraints()
+        
+        titleLabel.addConstraints()
+        
+        getQuizButton.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
+        getQuizButton.autoAlignAxis(toSuperviewAxis: .vertical)
+        getQuizButton.autoSetDimension(.width, toSize: buttonWidth)
+        getQuizButton.autoSetDimension(.height, toSize: buttonHeight)
+        
+        funFactLabel.autoPinEdge(.top, to: .bottom, of: getQuizButton, withOffset: offset)
+        funFactLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
+        funFactLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 20)
+        
+        funFactText.autoPinEdge(.top, to: .bottom, of: funFactLabel, withOffset: 5)
+        funFactText.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
+        funFactText.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 20)
+        
+        quizTableView.autoPinEdge(.top, to: .bottom, of: funFactText, withOffset: 20)
+        quizTableView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20)
+        quizTableView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10)
+        quizTableView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10)
+    }
+    
+    @objc final func getQuizAction(sender: UIButton!) {
+        self.quizzes = quizDataRepository.fetchData(filter: FilterSettings(searchText: ""))
+        DispatchQueue.main.async {
             self.funFactLabel.isHidden = false
             self.funFactText.isHidden = false
             self.quizTableView.isHidden = false
-            self.quizTableView.reloadData()
+            
             self.nbas = 0
             self.numberOfQuizzesPerCategory = [:]
             
             var categories: Set<QuizCategory> = []
             var categoryId: Int = 0
+            
+            self.byCategory = Dictionary(grouping: self.quizzes, by: { $0.category })
             
             for quiz in self.quizzes {
                 for question in quiz.questions {
@@ -117,37 +159,10 @@ class QuizzesViewController: UIViewController {
                     self.numberOfQuizzesPerCategory[quiz.category] = 1
                 }
             }
-
-            self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
-            
             self.numOfCategories = self.numberOfQuizzesPerCategory.keys.count
-            self.view.addSubview(self.quizTableView)
-            self.quizTableView.autoPinEdge(.top, to: .bottom, of: self.funFactText, withOffset: 20)
-            self.quizTableView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 20)
-            self.quizTableView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 10)
-            self.quizTableView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10)
-            
-        }, for: .touchUpInside)
-        
-        view.addSubview(getQuizButton)
-        view.addSubview(funFactLabel)
-        view.addSubview(funFactText)
-    }
-    
-    private func addConstraints() {
-        
-        getQuizButton.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
-        getQuizButton.autoAlignAxis(toSuperviewAxis: .vertical)
-        getQuizButton.autoSetDimension(.width, toSize: buttonWidth)
-        getQuizButton.autoSetDimension(.height, toSize: buttonHeight)
-        
-        funFactLabel.autoPinEdge(.top, to: .bottom, of: getQuizButton, withOffset: offset)
-        funFactLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
-        funFactLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 20)
-        
-        funFactText.autoPinEdge(.top, to: .bottom, of: funFactLabel, withOffset: 5)
-        funFactText.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 20)
-        funFactText.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 20)
+            self.funFactText.text = "There are \(self.nbas) questions that contain word \"NBA\""
+            self.quizTableView.reloadData()
+        }
     }
 }
 
@@ -165,25 +180,13 @@ extension QuizzesViewController: UITableViewDataSource {
         
         cell.backgroundColor = .clear
         
-        // Assuming quizzes are already sorted by categories
-        // Determining index of quiz to show in a table cell by indexPath
-        var sum: Int = 0
-        if(indexPath.section != 0) {
-            for i in 0...indexPath.section {
-                if let category = self.idToCategory[i] {
-                    if let numberOfQuizzes = self.numberOfQuizzesPerCategory[category] {
-                        sum += numberOfQuizzes
-                    } else {
-                        return UITableViewCell()
-                    }
-                } else {
-                    return UITableViewCell()
-                }
+        var quiz: Quiz!
+        if let category = self.idToCategory[indexPath.section] {
+            if let quizzesOfCategory = self.byCategory[category] {
+                quiz = quizzesOfCategory[indexPath.row]
             }
-            sum -= 1
         }
-        
-        cell.set(quiz: quizzes[sum + indexPath.row], font:self.myFont)
+        cell.set(quiz: quiz, font: self.myFont)
         
         return cell
     }
@@ -192,23 +195,14 @@ extension QuizzesViewController: UITableViewDataSource {
 extension QuizzesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        var sum: Int = 0
-        if(indexPath.section != 0) {
-            for i in 0...indexPath.section {
-                if let category = self.idToCategory[i] {
-                    if let numberOfQuizzes = self.numberOfQuizzesPerCategory[category] {
-                        sum += numberOfQuizzes
-                    } else {
-                        return
-                    }
-                } else {
-                    return
-                }
+
+        var quiz: Quiz!
+        if let category = self.idToCategory[indexPath.section] {
+            if let quizzesOfCategory = self.byCategory[category] {
+                quiz = quizzesOfCategory[indexPath.row]
             }
-            sum -= 1
         }
         
-        let quiz = quizzes[sum + indexPath.row]
         router.showSelectedQuizScreen(quiz: quiz)
     }
     

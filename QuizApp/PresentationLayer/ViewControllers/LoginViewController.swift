@@ -12,11 +12,12 @@ import PureLayout
 class LoginViewController: UIViewController {
     private var titleLabel: TitleLabel!
     private var gradientView: GradientView!
-    private var emailField: UITextField!
+    private var usernameField: UITextField!
     private var passwordField: UITextField!
     private var loginButton: UIButton!
     private var toggleButton: UIButton!
     private var errorLabel: UILabel!
+    private var noConnectionLabel: UILabel!
     
     private var buttonWidth: CGFloat = 300
     private var buttonHeight: CGFloat = 40
@@ -25,11 +26,13 @@ class LoginViewController: UIViewController {
     private let myFont = UIFont(name: "ArialMT", size: UILabel().font.pointSize)
     
     private var router: AppRouterProtocol!
+    private var networkService: NetworkServiceProtocol!
     
-    convenience init(router: AppRouterProtocol) {
+    convenience init(router: AppRouterProtocol, networkService: NetworkServiceProtocol) {
         self.init()
         
         self.router = router
+        self.networkService = networkService
     }
     
     override func viewDidLoad() {
@@ -40,21 +43,31 @@ class LoginViewController: UIViewController {
     
     private func buildViews() {
         // Building gradient view for gradient background
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
         // Building a label with the app title
-        titleLabel = TitleLabel(superView: view)
+        titleLabel = TitleLabel()
+        view.addSubview(titleLabel)
+        
+        noConnectionLabel = UILabel()
+        view.addSubview(noConnectionLabel)
+        noConnectionLabel.font = myFont
+        noConnectionLabel.text = "No Internet connection!"
+        noConnectionLabel.textAlignment = .center
+        noConnectionLabel.textColor = .white
+        noConnectionLabel.isHidden = true
         
         let textFieldBackgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
         
         // Building a textfield for email input
-        emailField = UITextFieldWithPadding()
-        emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
-        emailField.layer.cornerRadius = cornerRadius
-        emailField.textColor = .white
-        emailField.backgroundColor = textFieldBackgroundColor
-        emailField.font = myFont
-        emailField.addAction(.init {
+        usernameField = UITextFieldWithPadding()
+        usernameField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+        usernameField.layer.cornerRadius = cornerRadius
+        usernameField.textColor = .white
+        usernameField.backgroundColor = textFieldBackgroundColor
+        usernameField.font = myFont
+        usernameField.addAction(.init {
             _ in self.errorLabel.isHidden = true
         }, for: .allEditingEvents)
         
@@ -94,19 +107,18 @@ class LoginViewController: UIViewController {
         loginButton.addAction(.init {
             _ in
             self.errorLabel.isHidden = true
-            let status: LoginStatus = DataService().login(email: self.emailField.text!, password: self.passwordField.text!)
-            print(status)
-            switch(status){
-                case .success:
-                    self.router.showQuizzesScreen()
-                    break
-                case .error( _, _):
-                    self.errorLabel.isHidden = false
-                    break
-            }
+            self.handleLogin()
         }, for: .touchUpInside)
         
-        view.addSubview(emailField)
+        if !NetworkMonitor.shared.isConnected {
+            noConnectionLabel.isHidden = false
+            usernameField.isHidden = true
+            passwordField.isHidden = true
+            toggleButton.isHidden = true
+            loginButton.isHidden = true
+        }
+        
+        view.addSubview(usernameField)
         view.addSubview(passwordField)
         view.addSubview(loginButton)
         view.addSubview(toggleButton)
@@ -114,13 +126,21 @@ class LoginViewController: UIViewController {
     }
     
     private func addConstraints() {
-        emailField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
-        emailField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)
-        emailField.autoAlignAxis(toSuperviewAxis: .vertical)
-        emailField.autoSetDimension(.width, toSize: buttonWidth)
-        emailField.autoSetDimension(.height, toSize: buttonHeight)
+        gradientView.addConstraints()
         
-        passwordField.autoPinEdge(.top, to: .bottom, of: emailField, withOffset: offset)
+        titleLabel.addConstraints()
+        
+        noConnectionLabel.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
+        noConnectionLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 15)
+        noConnectionLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 15)
+        
+        usernameField.autoPinEdge(.top, to: .bottom, of: titleLabel, withOffset: offset)
+        usernameField.autoPinEdge(.bottom, to: .top, of: passwordField, withOffset: -offset)
+        usernameField.autoAlignAxis(toSuperviewAxis: .vertical)
+        usernameField.autoSetDimension(.width, toSize: buttonWidth)
+        usernameField.autoSetDimension(.height, toSize: buttonHeight)
+        
+        passwordField.autoPinEdge(.top, to: .bottom, of: usernameField, withOffset: offset)
         passwordField.autoAlignAxis(toSuperviewAxis: .vertical)
         passwordField.autoSetDimension(.width, toSize: buttonWidth)
         passwordField.autoSetDimension(.height, toSize: buttonHeight)
@@ -136,6 +156,24 @@ class LoginViewController: UIViewController {
         
         errorLabel.autoPinEdge(.top, to: .bottom, of: loginButton, withOffset: offset)
         errorLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+    }
+    
+    private func handleLogin() {
+        self.networkService.login(username: self.usernameField.text ?? "", password: self.passwordField.text ?? "") {
+            (result: Result<LoginData, RequestError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.router.showQuizzesScreen()
+                    break
+                
+                case .failure(let error):
+                    print(error)
+                    self.errorLabel.isHidden = false
+                    break
+                }
+            }
+        }
     }
 }
 

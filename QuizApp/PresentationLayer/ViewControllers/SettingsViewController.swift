@@ -35,7 +35,8 @@ class SettingsViewController: UIViewController {
     }
     
     private func buildViews() {
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
         usernameLabel = UILabel()
         view.addSubview(usernameLabel)
@@ -63,6 +64,8 @@ class SettingsViewController: UIViewController {
     }
     
     private func addConstraints() {
+        gradientView.addConstraints()
+        
         usernameLabel.autoPinEdge(toSuperviewSafeArea: .top, withInset: 20)
         usernameLabel.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
         usernameLabel.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)

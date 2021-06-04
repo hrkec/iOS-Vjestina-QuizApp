@@ -12,19 +12,16 @@ class GradientView: UIView {
     private let gradientStartColor: UIColor
     private let gradientEndColor: UIColor
     
-    init(gradientStartColor: UIColor, gradientEndColor: UIColor, superView: UIView){
+    init(gradientStartColor: UIColor, gradientEndColor: UIColor){
         self.gradientStartColor = gradientStartColor
         self.gradientEndColor = gradientEndColor
         super.init(frame: .zero)
-        
-        superView.addSubview(self)
-        addConstraints()
     }
     
-    convenience init(superView: UIView) {
+    convenience init() {
         let gradientStartColor = UIColor(red: 0.87, green: 0.32, blue: 0.32, alpha: 1.00)
         let gradientEndColor = UIColor(red: 0.39, green: 0.03, blue: 0.03, alpha: 1.00)
-        self.init(gradientStartColor: gradientStartColor, gradientEndColor: gradientEndColor, superView: superView)
+        self.init(gradientStartColor: gradientStartColor, gradientEndColor: gradientEndColor)
     }
     
     required init?(coder: NSCoder) {
@@ -48,7 +45,7 @@ class GradientView: UIView {
             }
         }
     
-    private func addConstraints() {
+    func addConstraints() {
         autoPinEdgesToSuperviewEdges()
     }
     

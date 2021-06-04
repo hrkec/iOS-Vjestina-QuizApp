@@ -1,0 +1,5 @@
+protocol QuizNetworkSourceProtocol {
+
+    func fetchQuizzesFromNetwork()
+
+}

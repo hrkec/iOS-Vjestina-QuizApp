@@ -43,9 +43,11 @@ class QuizResultViewController: UIViewController {
     }
     
     private func buildViews() {
-        gradientView = GradientView(superView: view)
+        gradientView = GradientView()
+        view.addSubview(gradientView)
         
-        titleLabel = TitleLabel(superView: view)
+        titleLabel = TitleLabel()
+        view.addSubview(titleLabel)
         
         // Label for showing quiz results
         resultsLabel = UILabel()
@@ -69,6 +71,10 @@ class QuizResultViewController: UIViewController {
     }
     
     private func addConstraints() {
+        gradientView.addConstraints()
+        
+        titleLabel.addConstraints()
+        
         resultsLabel.autoAlignAxis(toSuperviewAxis: .vertical)
         resultsLabel.autoCenterInSuperview()
         
